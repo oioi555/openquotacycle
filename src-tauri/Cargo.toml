@@ -1,6 +1,6 @@
 [package]
 name = "quotracker"
-version = "0.1.0"
+version = "0.1.1"
 description = "Linux desktop app for planning AI coding quotas around the 5-hour window"
 authors = ["oioi555", "Andrea Debernardi"]
 edition = "2024"
