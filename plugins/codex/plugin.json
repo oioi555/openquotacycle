@@ -16,10 +16,7 @@
     { "type": "progress", "label": "Luna Reserve", "scope": "detail" },
     { "type": "progress", "label": "Reviews", "scope": "detail" },
     { "type": "text", "label": "Rate Limit Resets", "scope": "detail" },
-    { "type": "text", "label": "Extra Usage", "scope": "detail" },
-    { "type": "text", "label": "Today", "scope": "detail" },
-    { "type": "text", "label": "Yesterday", "scope": "detail" },
-    { "type": "text", "label": "Last 30 Days", "scope": "detail" }
+    { "type": "text", "label": "Extra Usage", "scope": "detail" }
   ],
   "windowStarter": {
     "enabledByDefault": true,

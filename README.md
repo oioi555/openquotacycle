@@ -52,7 +52,7 @@ makepkg -si
 ## Bundled providers
 
 - [**Antigravity**](docs/providers/antigravity.md) — Session, Weekly, Claude, Claude Wk, optional local spend
-- [**Claude**](docs/providers/claude.md) — session, weekly, extra usage, Fable, local token usage (ccusage)
+- [**Claude**](docs/providers/claude.md) — session, weekly, extra usage, Fable
 - [**Codex**](docs/providers/codex.md) — session, weekly, Luna Reserve, reviews, extra usage
 - [**Copilot**](docs/providers/copilot.md) — credits, chat, completions
 - [**Cursor**](docs/providers/cursor.md) — Total Usage, Cursor, Other, credits, requests, on-demand, Grok Bot

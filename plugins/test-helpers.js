@@ -76,9 +76,6 @@ export const makeCtx = () => {
       ls: {
         discover: vi.fn(() => null),
       },
-      ccusage: {
-        query: vi.fn(() => null),
-      },
       log: {
         trace: vi.fn(),
         debug: vi.fn(),

@@ -231,7 +231,7 @@ pub fn discover_availability() -> Vec<ProviderStatus> {
 }
 
 /// Configure the child into its own process group so timeout cleanup can kill
-/// the whole tree (mirrors the ccusage runner handling in host_api).
+/// the whole tree.
 #[cfg(unix)]
 fn configure_process_group(command: &mut std::process::Command) {
     use std::os::unix::process::CommandExt;
