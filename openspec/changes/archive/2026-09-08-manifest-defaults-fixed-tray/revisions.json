@@ -1,0 +1,19 @@
+{
+  "changeId": "manifest-defaults-fixed-tray",
+  "revisions": [
+    {
+      "id": "rev-65361318",
+      "description": "Static tray icon split into light/dark glyph variants (tray-icon.png black + tray-icon-white.png white); tray-controller picks variant by isDark and reinstalls on theme change",
+      "reason": "固定化した単色グリフがダークパネルで不可視になる(2026-06-27修正と同一 root cause: 黒ピクセル+テンプレート無効環境)。Linux/Ayatanaではicon_as_templateがno-opのため、テーマ別2アセット方式で可視性を回復",
+      "author": "AI",
+      "createdAt": "2026-09-07T21:42:23.272Z"
+    },
+    {
+      "id": "rev-4051720f",
+      "description": "Tray uses the full-color app icon (icons/icon.png) in Rust + frontend; light/dark glyph variant approach dropped, no theme tracking",
+      "reason": "ユーザーレビュー: 黒枠+白/緑ラインのフルカラーアイコンはダーク/ライト両パネルで成立するためテーマ分岐自体が不要。rev-65361318の2アセット方式を破棄し単純化",
+      "author": "AI",
+      "createdAt": "2026-09-07T21:48:35.403Z"
+    }
+  ]
+}

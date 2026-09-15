@@ -1,0 +1,43 @@
+{
+  "changeId": "add-xai-openrouter-quotas",
+  "revisions": [
+    {
+      "id": "rev-dcd1dcec",
+      "description": "Switched the xAI plugin auth source from OpenCode's `xai` OAuth entry (`~/.local/share/opencode/auth.json`) to GrokBuild's `~/.grok/auth.json`: scan all entries and use the first object with a non-empty `key`, expire via `expires_at` (ISO) with JWT `exp` fallback, and identify billing requests with the `X-XAI-Token-Auth: xai-grok-cli` header.",
+      "reason": "The user runs GrokBuild (not OpenCode) for xAI auth; GrokBuild owns the `~/.grok/auth.json` store and its refresh flow, so Tuxmeter must read it read-only and never write tokens or call OAuth endpoints.",
+      "author": "AI",
+      "createdAt": "2026-08-01T05:48:51.000Z",
+      "metadata": {
+        "type": "behavior",
+        "affectedField": "auth_source",
+        "updateTarget": [
+          "design",
+          "specs"
+        ],
+        "source": {
+          "file": "plugins/xai/plugin.js",
+          "function": "loadGrokAuthEntry"
+        }
+      }
+    },
+    {
+      "id": "rev-f212e8e5",
+      "description": "Added xAI period duration to progress output so pace status indicators and in-bar time markers render when billing boundaries are available.",
+      "reason": "The initial plugin exposed the reset timestamp but omitted the period length required by Tuxmeter's pace calculation.",
+      "author": "AI",
+      "createdAt": "2026-07-31T20:17:17.408Z",
+      "metadata": {
+        "type": "behavior",
+        "affectedField": "periodDurationMs",
+        "updateTarget": [
+          "design",
+          "specs"
+        ],
+        "source": {
+          "file": "plugins/xai/plugin.js",
+          "function": "parseCreditsWindow"
+        }
+      }
+    }
+  ]
+}

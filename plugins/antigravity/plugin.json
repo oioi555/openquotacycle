@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "antigravity",
+  "name": "Antigravity",
+  "version": "0.0.1",
+  "entry": "plugin.js",
+  "icon": "icon.svg",
+  "brandColor": "#4285F4",
+  "lines": [
+    { "type": "progress", "label": "Session", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Weekly", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Claude", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Claude Wk", "scope": "overview", "visibleByDefault": true },
+    { "type": "text", "label": "Today", "scope": "detail" },
+    { "type": "text", "label": "Yesterday", "scope": "detail" },
+    { "type": "text", "label": "Last 30 Days", "scope": "detail" }
+  ],
+  "windowStarter": {
+    "enabledByDefault": false,
+    "defaultRunner": "agy",
+    "allowedRunners": ["agy"],
+    "windows": [
+      { "id": "session", "line": "Session", "weeklyLine": "Weekly", "enabledByDefault": false },
+      { "id": "claude", "line": "Claude", "weeklyLine": "Claude Wk", "enabledByDefault": false }
+    ]
+  }
+}

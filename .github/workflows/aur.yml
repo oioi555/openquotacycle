@@ -1,0 +1,142 @@
+name: Publish AUR
+
+# After publish.yml creates the GitHub Release (.deb), push quotracker-bin to AUR.
+# Required secret: AUR_SSH_PRIVATE_KEY (ed25519 registered on aur.archlinux.org).
+# Same key type as oioi555/openwhispr-aur. Missing secret skips this job.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version without v (e.g. 0.1.0)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aur-publish
+  cancel-in-progress: false
+
+jobs:
+  aur-bin:
+    if: startsWith(github.event.release.tag_name, 'v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+    steps:
+      - name: Resolve version
+        id: ver
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version: ${VERSION}" >&2
+            exit 1
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Skip when AUR SSH key is missing
+        id: secret
+        run: |
+          if [ -z "${AUR_SSH_PRIVATE_KEY}" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "AUR_SSH_PRIVATE_KEY is not set; skip AUR publish."
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.secret.outputs.present == 'true'
+
+      - name: Wait for GitHub Release .deb
+        if: steps.secret.outputs.present == 'true'
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          API="https://api.github.com/repos/${{ github.repository }}/releases/tags/v${VERSION}"
+          for i in 1 2 3 4 5 6 7 8; do
+            NAME="$(curl -fsSL "$API" | jq -r '.assets[].name | select(endswith(".deb"))' | head -n 1 || true)"
+            if [ -n "${NAME}" ]; then
+              URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/${NAME}"
+              curl -fsSL "$URL" -o app.deb
+              echo "deb_name=${NAME}" >> "$GITHUB_ENV"
+              echo "sha256=$(sha256sum app.deb | awk '{print $1}')" >> "$GITHUB_ENV"
+              exit 0
+            fi
+            echo "deb not ready yet (${i}/8)"
+            sleep 15
+          done
+          echo "Timed out waiting for a .deb on v${VERSION}" >&2
+          exit 1
+
+      - name: Fill PKGBUILD and .SRCINFO
+        if: steps.secret.outputs.present == 'true'
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          PKG=aur/quotracker-bin/PKGBUILD
+          DEB_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/${deb_name}"
+          sed -i \
+            -e "s/^pkgver=.*/pkgver=${VERSION}/" \
+            -e "s/^pkgrel=.*/pkgrel=1/" \
+            -e "s|^source=.*|source=(\"${DEB_URL}\")|" \
+            -e "s/^sha256sums=.*/sha256sums=('${sha256}')/" \
+            "$PKG"
+
+          {
+            echo "pkgbase = quotracker-bin"
+            echo "	pkgdesc = Linux desktop app for planning AI coding quotas around the 5-hour window"
+            echo "	pkgver = ${VERSION}"
+            echo "	pkgrel = 1"
+            echo "	url = https://github.com/${{ github.repository }}"
+            echo "	arch = x86_64"
+            echo "	license = MIT"
+            echo "	depends = webkit2gtk-4.1"
+            echo "	depends = gtk3"
+            echo "	provides = quotracker"
+            echo "	conflicts = quotracker"
+            echo "	options = !strip"
+            echo "	options = !debug"
+            echo "	source = ${DEB_URL}"
+            echo "	noextract = ${deb_name}"
+            echo "	sha256sums = ${sha256}"
+            echo "pkgname = quotracker-bin"
+          } > aur/quotracker-bin/.SRCINFO
+
+      - name: Push to AUR
+        if: steps.secret.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.ver.outputs.version }}"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur_key
+          chmod 600 ~/.ssh/aur_key
+          echo "aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrPzbawxA/k2g6NcyV5jmqwJ2s+zpgZGZ7tpLIcN" \
+            >> ~/.ssh/known_hosts
+          printf 'Host aur.archlinux.org\n  IdentityFile ~/.ssh/aur_key\n  User aur\n' \
+            >> ~/.ssh/config
+
+          git clone "ssh://aur@aur.archlinux.org/quotracker-bin.git" aur-push
+          cp aur/quotracker-bin/PKGBUILD aur-push/PKGBUILD
+          cp aur/quotracker-bin/.SRCINFO aur-push/.SRCINFO
+
+          git -C aur-push config user.name "oioi555"
+          git -C aur-push config user.email "oioi555x@gmail.com"
+          git -C aur-push add PKGBUILD .SRCINFO
+          if git -C aur-push diff --cached --quiet; then
+            echo "AUR quotracker-bin already at ${VERSION}"
+            exit 0
+          fi
+          git -C aur-push commit -m "upgpkg: quotracker-bin ${VERSION}-1"
+          git -C aur-push push

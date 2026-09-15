@@ -1,0 +1,56 @@
+{
+  "changeId": "rename-to-quotracker",
+  "revisions": [
+    {
+      "id": "rev-b320f1f6",
+      "description": "Removed inherited Aptabase analytics because the embedded app key belonged to upstream OpenUsage; Quotracker now sends no Aptabase events.",
+      "reason": "An independent project must not send telemetry to the upstream owner's analytics account, and the user chose to remove analytics rather than provision a new account.",
+      "author": "AI",
+      "createdAt": "2026-09-04T02:49:16.804Z",
+      "metadata": {
+        "type": "behavior",
+        "updateTarget": [
+          "design"
+        ],
+        "source": {
+          "file": "src-tauri/src/lib.rs",
+          "function": "run"
+        }
+      }
+    },
+    {
+      "id": "rev-d6638173",
+      "description": "Removed the inherited Tauri self-updater and signing configuration; Arch package updates are owned exclusively by pacman/AUR tooling.",
+      "reason": "Self-updating an AUR-installed binary bypasses package ownership, and the inherited updater key could not validate Quotracker releases.",
+      "author": "AI",
+      "createdAt": "2026-09-04T02:49:27.785Z",
+      "metadata": {
+        "type": "behavior",
+        "updateTarget": [
+          "design"
+        ],
+        "source": {
+          "file": "src/components/app/app-shell.tsx",
+          "function": "AppShell"
+        }
+      }
+    },
+    {
+      "id": "rev-42241b85",
+      "description": "Replaced predecessor gauge glyphs in the activity bar and macOS Icon Composer source; verified that the Linux native window already publishes the generated Quotracker icon.",
+      "reason": "Manual visual review found inline SVGs missed by the asset audit. X11 inspection confirmed Tauri already sets _NET_WM_ICON before window creation; KWin titlebar-button visibility is desktop configuration and native decorations remain required.",
+      "author": "AI",
+      "createdAt": "2026-09-04T03:09:57.920Z",
+      "metadata": {
+        "type": "internal",
+        "updateTarget": [
+          "design"
+        ],
+        "source": {
+          "file": "src/components/side-nav.tsx",
+          "function": "SideNav"
+        }
+      }
+    }
+  ]
+}

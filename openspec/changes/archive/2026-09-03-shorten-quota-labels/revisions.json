@@ -1,0 +1,22 @@
+{
+  "changeId": "shorten-quota-labels",
+  "revisions": [
+    {
+      "id": "rev-47173acb",
+      "description": "design.md 決定3「codex Spark Weeklyはmanifestのみ変更(dead entry)」を修正: 実行時は実際に `Spark Weekly` を出力していた(旧テスト plugins/codex/plugin.test.js:959 が証明)ため、plugin.js:573 の実行時ラベルも `shortName + \" Wk\"` に変更し manifest と整合させた。js変更なしの前提は誤りだった。",
+      "reason": "実行時コードも変更しないと plugin.js/plugin.json のラベルが不一致になり、provider-card のラベル照合が壊れるため",
+      "author": "AI",
+      "createdAt": "2026-09-03T04:13:25.661Z",
+      "metadata": {
+        "type": "internal",
+        "updateTarget": [
+          "design"
+        ],
+        "source": {
+          "file": "plugins/codex/plugin.js",
+          "function": "additional_rate_limits loop (line 573)"
+        }
+      }
+    }
+  ]
+}

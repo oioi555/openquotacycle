@@ -1,0 +1,22 @@
+{
+  "changeId": "antigravity-stale-snapshot",
+  "revisions": [
+    {
+      "id": "rev-9bb40bee",
+      "description": "Added a runaway guard to the auto-wake controller: after 2 consecutive wake-succeeded-but-re-probe-still-stale cycles, the controller applies the same 15-minute cooldown as a failed spawn (and resets on a fixed re-probe or a failed spawn). New constant ANTIGRAVITY_WAKE_STALE_REPROBE_LIMIT = 2 in src/lib/antigravity-wake.ts. Spec semantics (\"at most one wake\" per Stale trigger) unchanged; this caps how many trigger cycles may spawn agy before backing off.",
+      "reason": "Design accepted \"auto-wake on every 15 min refresh while Stale\" on the assumption a successful wake yields a live probe; nothing stopped repeated agy spawns if that assumption broke (account mismatch, Cloud Code outage while agy auth works) or if the user sets a short refresh interval.",
+      "author": "AI",
+      "createdAt": "2026-09-12T04:29:04.143Z",
+      "metadata": {
+        "type": "behavior",
+        "updateTarget": [
+          "design"
+        ],
+        "source": {
+          "file": "src/svelte/controllers/antigravity-wake-controller.svelte.ts",
+          "function": "considerAutoWake"
+        }
+      }
+    }
+  ]
+}

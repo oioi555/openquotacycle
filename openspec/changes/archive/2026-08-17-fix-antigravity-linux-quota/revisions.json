@@ -1,0 +1,26 @@
+{
+  "changeId": "fix-antigravity-linux-quota",
+  "revisions": [
+    {
+      "id": "rev-cfa8a580",
+      "description": "Align Antigravity quota reporting with the current RetrieveUserQuotaSummary API: map exact Gemini/3P five-hour and weekly buckets to Session, Weekly, Claude, and Claude Weekly; treat a parsed empty summary as authoritative; retain legacy endpoints only as fallback.",
+      "reason": "The legacy GetUserStatus/GetCommandModelConfigs and fetchAvailableModels paths expose only per-model rolling five-hour quota, which is stale for current Antigravity builds. The upstream/current API exposes merged pools and weekly windows.",
+      "author": "AI",
+      "createdAt": "2026-08-17T11:33:22.115Z",
+      "metadata": {
+        "type": "behavior",
+        "affectedAPI": "RetrieveUserQuotaSummary",
+        "affectedField": "groups.buckets",
+        "updateTarget": [
+          "specs",
+          "design",
+          "delta-specs"
+        ],
+        "source": {
+          "file": "plugins/antigravity/plugin.js",
+          "function": "parseQuotaSummary"
+        }
+      }
+    }
+  ]
+}

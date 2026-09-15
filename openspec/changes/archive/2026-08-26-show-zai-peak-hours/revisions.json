@@ -1,0 +1,22 @@
+{
+  "changeId": "show-zai-peak-hours",
+  "revisions": [
+    {
+      "id": "rev-c2251a8a",
+      "description": "Extend the required plugin redaction audit to redact the existing Z.ai subscription response field `customerId` in HTTP body logs and cover it with a host API regression test.",
+      "reason": "Implementation audit found that Z.ai's documented subscription payload contains `customerId`, but `host_api.rs` did not include camelCase or snake_case customer identifiers in its sensitive response-body key list.",
+      "author": "AI",
+      "createdAt": "2026-08-25T15:42:55.197Z",
+      "metadata": {
+        "type": "internal",
+        "updateTarget": [
+          "design"
+        ],
+        "source": {
+          "file": "src-tauri/src/plugin_engine/host_api.rs",
+          "function": "redact_body"
+        }
+      }
+    }
+  ]
+}

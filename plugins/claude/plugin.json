@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "claude",
+  "name": "Claude",
+  "version": "0.0.1",
+  "entry": "plugin.js",
+  "icon": "icon.svg",
+  "brandColor": "#DE7356",
+  "links": [
+    { "label": "Status", "url": "https://status.anthropic.com/" },
+    { "label": "Dashboard", "url": "https://claude.ai/settings/usage" }
+  ],
+  "lines": [
+    { "type": "progress", "label": "Session", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Weekly", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Sonnet", "scope": "detail" },
+    { "type": "progress", "label": "Fable", "scope": "detail" },
+    { "type": "progress", "label": "Extra usage spent", "scope": "detail" },
+    { "type": "text", "label": "Today", "scope": "detail" },
+    { "type": "text", "label": "Yesterday", "scope": "detail" },
+    { "type": "text", "label": "Last 30 Days", "scope": "detail" }
+  ],
+  "windowStarter": {
+    "enabledByDefault": true,
+    "defaultRunner": "claude",
+    "allowedRunners": ["claude"],
+    "windows": [
+      { "id": "session", "line": "Session", "weeklyLine": "Weekly" }
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+schema: spec-driven
+created: 2026-09-11
+goal: Replace the Resets teaser with a first-class Timeline card and page, keep
+  screen id resets, and freeze cadence labels, customize, and chrome.

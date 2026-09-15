@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "codex",
+  "name": "Codex",
+  "version": "0.0.1",
+  "entry": "plugin.js",
+  "icon": "icon.svg",
+  "brandColor": "#000000",
+  "links": [
+    { "label": "Status", "url": "https://status.openai.com/" },
+    { "label": "Dashboard", "url": "https://chatgpt.com/codex/settings/usage" }
+  ],
+  "lines": [
+    { "type": "progress", "label": "Session", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Weekly", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Luna Reserve", "scope": "detail" },
+    { "type": "progress", "label": "Reviews", "scope": "detail" },
+    { "type": "text", "label": "Rate Limit Resets", "scope": "detail" },
+    { "type": "text", "label": "Extra Usage", "scope": "detail" },
+    { "type": "text", "label": "Today", "scope": "detail" },
+    { "type": "text", "label": "Yesterday", "scope": "detail" },
+    { "type": "text", "label": "Last 30 Days", "scope": "detail" }
+  ],
+  "windowStarter": {
+    "enabledByDefault": true,
+    "defaultRunner": "codex",
+    "allowedRunners": ["codex", "opencode", "hermes", "pi"],
+    "windows": [
+      { "id": "session", "line": "Session", "weeklyLine": "Weekly" }
+    ]
+  }
+}

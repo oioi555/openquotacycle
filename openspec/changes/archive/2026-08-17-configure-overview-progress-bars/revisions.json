@@ -1,0 +1,24 @@
+{
+  "changeId": "configure-overview-progress-bars",
+  "revisions": [
+    {
+      "id": "rev-58b42fd8",
+      "description": "Make per-provider Overview controls collapsed by default and add a provider-level toggle for text-based statistics such as Codex Today/Yesterday/Last 30 Days.",
+      "reason": "User feedback: the expanded checkbox list made Settings difficult to read, and Codex statistics were not selectable because the first implementation only supported progress lines.",
+      "author": "AI",
+      "createdAt": "2026-08-17T13:15:10.091Z",
+      "metadata": {
+        "type": "behavior",
+        "updateTarget": [
+          "specs",
+          "design",
+          "delta-specs"
+        ],
+        "source": {
+          "file": "src/pages/settings.tsx",
+          "function": "SortablePluginItem"
+        }
+      }
+    }
+  ]
+}

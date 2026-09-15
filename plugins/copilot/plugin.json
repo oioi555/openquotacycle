@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "copilot",
+  "name": "Copilot",
+  "version": "0.0.1",
+  "entry": "plugin.js",
+  "icon": "icon.svg",
+  "brandColor": "#000000",
+  "links": [
+    { "label": "Status", "url": "https://www.githubstatus.com/" },
+    { "label": "Dashboard", "url": "https://github.com/settings/billing" }
+  ],
+  "lines": [
+    { "type": "progress", "label": "Credits", "scope": "overview", "visibleByDefault": true },
+    { "type": "text", "label": "Extra Usage", "scope": "overview" },
+    { "type": "progress", "label": "Chat", "scope": "overview" },
+    { "type": "progress", "label": "Completions", "scope": "overview" },
+    { "type": "text", "label": "Org Credits", "scope": "detail" },
+    { "type": "text", "label": "Org Spend", "scope": "detail" }
+  ]
+}

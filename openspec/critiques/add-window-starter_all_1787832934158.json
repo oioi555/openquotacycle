@@ -1,0 +1,58 @@
+{
+  "changeName": "add-window-starter",
+  "documentType": "all",
+  "overallScore": 6.6,
+  "critiques": [
+    {
+      "id": "aa1ddd13",
+      "category": "completeness",
+      "severity": "critical",
+      "title": "缺少问题描述",
+      "description": "文档应包含清晰的问题描述章节",
+      "suggestion": "添加 \"Problem\" 或 \"背景\" 章节描述要解决的问题"
+    },
+    {
+      "id": "f040eef4",
+      "category": "feasibility",
+      "severity": "info",
+      "title": "缺少代码引用",
+      "description": "设计文档应引用相关代码文件",
+      "suggestion": "添加相关代码文件的引用以便实现"
+    },
+    {
+      "id": "207b409a",
+      "category": "security",
+      "severity": "warning",
+      "title": "未提及认证授权",
+      "description": "API 或用户相关变更应说明认证授权策略",
+      "suggestion": "添加认证和授权相关说明"
+    },
+    {
+      "id": "1a501829",
+      "category": "clarity",
+      "severity": "info",
+      "title": "使用了未定义的术语",
+      "description": "发现多个可能需要解释的缩写: CLI, API, SDK, DESIGN, PTY",
+      "suggestion": "确保首次使用时解释专业术语和缩写"
+    }
+  ],
+  "suggestions": [
+    "补充缺失的文档章节，确保问题描述、解决方案和影响范围完整",
+    "审查安全相关设计，确保认证、授权和数据验证机制到位",
+    "改进文档清晰度，统一术语使用"
+  ],
+  "summary": {
+    "total": 4,
+    "critical": 1,
+    "warning": 1,
+    "info": 2,
+    "byCategory": {
+      "completeness": 1,
+      "feasibility": 1,
+      "security": 1,
+      "edge_case": 0,
+      "clarity": 1
+    }
+  },
+  "createdAt": "2026-08-27T12:15:34.157Z"
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "opencode-go",
+  "name": "OpenCode Go",
+  "version": "0.0.1",
+  "entry": "plugin.js",
+  "icon": "icon.svg",
+  "brandColor": "#000000",
+  "links": [
+    { "label": "Dashboard", "url": "https://opencode.ai/auth" }
+  ],
+  "lines": [
+    { "type": "progress", "label": "Session", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Weekly", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Monthly", "scope": "detail", "visibleByDefault": true },
+    { "type": "text", "label": "Today", "scope": "detail" },
+    { "type": "text", "label": "Yesterday", "scope": "detail" },
+    { "type": "text", "label": "Last 30 Days", "scope": "detail" }
+  ]
+}

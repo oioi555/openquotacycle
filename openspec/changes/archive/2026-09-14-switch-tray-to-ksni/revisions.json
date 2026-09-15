@@ -1,0 +1,24 @@
+{
+  "changeId": "switch-tray-to-ksni",
+  "revisions": [
+    {
+      "id": "rev-b52755df",
+      "description": "Reconciled the tray menu contract with the implemented focused menu: Overview, Timeline, Settings, About Quotracker, and Quit; removed legacy duplicate Show Window and Debug Level entries.",
+      "reason": "The delta spec and implementation already used the focused menu, while proposal, design, and task text still described the pre-ksni menu.",
+      "author": "AI",
+      "createdAt": "2026-09-14T13:07:35.590Z",
+      "metadata": {
+        "type": "behavior",
+        "affectedField": "StatusNotifierItem context menu",
+        "updateTarget": [
+          "design",
+          "delta-specs"
+        ],
+        "source": {
+          "file": "src-tauri/src/tray.rs",
+          "function": "QuoTray::menu"
+        }
+      }
+    }
+  ]
+}

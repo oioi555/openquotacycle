@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "zai",
+  "name": "Z.ai",
+  "version": "0.0.1",
+  "entry": "plugin.js",
+  "icon": "icon.svg",
+  "brandColor": "#2D2D2D",
+  "links": [
+    {
+      "label": "Dashboard",
+      "url": "https://z.ai/manage-apikey/coding-plan/personal/my-plan"
+    },
+    { "label": "API Keys", "url": "https://z.ai/manage-apikey/apikey-list" }
+  ],
+  "lines": [
+    { "type": "progress", "label": "Session", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Weekly", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Tool calls", "scope": "overview" }
+  ],
+  "windowStarter": {
+    "enabledByDefault": true,
+    "defaultRunner": "zcode",
+    "allowedRunners": ["zcode", "opencode", "hermes", "pi"],
+    "windows": [
+      { "id": "session", "line": "Session", "weeklyLine": "Weekly" }
+    ]
+  }
+}

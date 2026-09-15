@@ -1,0 +1,24 @@
+{
+  "changeId": "split-quota-reset-timeline-windows",
+  "revisions": [
+    {
+      "id": "rev-45288582",
+      "description": "Changed weekly axis header tick labels from local M/D to day-only labels to prevent collisions at narrow widths; weekly reset markers retain local M/D labels.",
+      "reason": "M/D header text overlapped and became unreadable when the timeline was narrowed.",
+      "author": "AI",
+      "createdAt": "2026-08-17T09:11:26.433Z",
+      "metadata": {
+        "type": "behavior",
+        "updateTarget": [
+          "specs",
+          "design",
+          "delta-specs"
+        ],
+        "source": {
+          "file": "src/components/quota-reset-timeline/day-ticks.tsx",
+          "function": "DayTicks"
+        }
+      }
+    }
+  ]
+}
