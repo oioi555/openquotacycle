@@ -1,24 +1,44 @@
 # Window Starter
 
-Window Starter can begin an idle 5-hour subscription window so its reset countdown starts before the next interactive coding session. It is disabled by default.
+Starts an idle 5-hour quota window with one CLI request so the reset countdown is already running before the next coding session. Off by default.
 
-Window Starter lives on the **Timeline** tab, under the reset plots. The global switch is a compact **Auto-start** card (label and `5-hour` copy inside, toggle inside the card). A window is started automatically only when that switch is on **and** the plugin's participation for that window is on.
+It lives on the **Timeline** tab, under the reset plots. There is no separate Window Starter page and no global Activity list.
 
-Targets are grouped like Overview: one card per provider, in provider list order (declared windows stay in plugin order). Each card shows the current window status (window line and badge). When a window has a prior attempt, that row also shows the newest attempt's outcome icon and compact local `M/D HH:mm` clock — not the runner name. Expanding a card shows that provider's newest 5 start attempts. Collapsed log rows use an outcome icon, the runner label (tool name), and a compact local `M/D HH:mm` clock; on a multi-window card the log title is the window line, then the runner. Window, runner, and command stay in the expanded details. Status words are omitted. Right-click a window row to turn that window on or off, open Customize L2, or run the starter command now (after a confirmation). Choose the CLI harness on Customize L2 (`customize:<plugin>`). L2 also has an icon-only copy button for the selected command. The clipboard text already contains the starter prompt (shell-quoted), so it can be pasted into a terminal as-is.
+## Controls
 
-Plugins declare a `windowStarter` capability. Bundled defaults:
+**Auto-start** is the compact card at the top of the section (label, `5-hour` copy, toggle). Automatic starts need that switch on **and** participation on for that window.
 
-- Claude, Codex, and Z.ai: participation on, first-party runner
+Pick the CLI on Customize L2 (`customize:<plugin>`). L2 has an icon-only copy button; the clipboard text already includes the starter prompt (shell-quoted) for pasting into a terminal.
+
+Right-click a window row to turn that window on or off, open Customize L2, or **Run now** (after a confirmation). Run now can fire while Auto-start is off; that attempt then holds the auto-start lock.
+
+Per-provider reset and Reset All Customization restore participation, runner, and window picks to plugin defaults. They do not change Auto-start.
+
+## Cards
+
+Targets are grouped like Overview: one card per provider, in provider list order (declared windows stay in plugin order). Antigravity is one card with Session and Claude status rows.
+
+Collapsed: window line and badge. If that window has an attempt, the row also shows the newest outcome icon and local `M/D HH:mm` — not the runner name.
+
+Expanded: that provider's newest **5** start attempts. Log rows use an outcome icon, the runner label, and `M/D HH:mm`. On a multi-window card the log title is the window line, then the runner. Window, runner, and command stay in the expanded details. Status words are omitted.
+
+## When it starts
+
+A start needs all of: plugin enabled, participation on for that window, the declared 5-hour progress line idle, the declared weekly line not exhausted, and the selected runner on `PATH`.
+
+Idle means the reset is expired, or usage is 0% with no reset time. A future `resetsAt` is Active even when rounded `used` is 0%. Overview then shows the countdown, and a successful start is confirmed from that reset. Window Starter does not treat `used > 0` as the started signal and does not retry because usage stayed rounded to 0%.
+
+After a boot with an expired Antigravity token and no local server, the plugin may show a `Stale` snapshot. The starter can classify that stale 5-hour line as idle and run `agy` once. `agy` refreshes its OS keyring token first, so confirmation polls hit Cloud Code without the IDE.
+
+Credential wake is a different host command (Antigravity `agy -p /quota --print-timeout 1m`, Grok `grok models`). It is not a Window Starter attempt, does not use the pins below, and does not write a start log. Grok Build is not a catalog runner. See [Antigravity Credential Renewal](providers/antigravity.md#credential-renewal) and [Grok Credential Wake](providers/grok.md#credential-wake).
+
+## Plugins
+
+A plugin only appears here when its manifest declares `windowStarter`. Bundled defaults:
+
+- Claude, Codex, Z.ai: participation on, first-party runner
 - Antigravity: Session and Claude windows, both off; runner `agy`
-- OpenCode Go: no capability (rolling session; omitted from this section)
-
-Quotracker starts a window when the plugin is enabled, participation for that window is on, the declared 5-hour progress line is idle, the declared weekly line is not exhausted, and the selected runner is on `PATH`.
-
-A five-hour window is idle only when its reset is expired or it has 0% usage with no reset time. A future `resetsAt` means the window is active—even when rounded `used` is 0%—so the Overview shows the countdown and a successful starter attempt can be confirmed from that reset time. Window Starter does not use `used > 0` as the started signal and does not retry because usage remains rounded to 0%.
-
-Antigravity keeps its last successful reading as a display-only snapshot. After a PC boot with an expired token and no local server, the plugin shows that snapshot with a `Stale` chip; the starter may then classify the stale 5-hour line as idle and run `agy` once. `agy` silently refreshes its OS keyring token before that request, so the confirmation polls reach Cloud Code with the fresh keyring token and confirm the window without the Antigravity IDE.
-
-Credential wake is a separate host command. Antigravity uses `agy -p /quota --print-timeout 1m`; Grok uses `grok models`. Neither is a Window Starter attempt, neither uses the `--model` pins below, and neither writes an activity record. Grok Build is not a catalog runner. See [Antigravity Credential Renewal](providers/antigravity.md#credential-renewal) and [Grok Credential Wake](providers/grok.md#credential-wake).
+- OpenCode Go: no capability (rolling session; omitted)
 
 ## Runners
 
@@ -33,9 +53,9 @@ The host owns executables and argv. The UI sends plugin id, runner id, window li
 
 Claude cannot be started through OpenCode, Hermes, or Pi (Anthropic forbids third-party clients). Z.ai cannot be started through Claude Code.
 
-## Fixed commands
+## Commands
 
-Quotracker invokes each executable directly without a shell:
+Quotracker invokes each executable directly, no shell:
 
 ```text
 claude -p <prompt> --model claude-haiku-4-5 --tools "" --max-turns 1 --no-session-persistence
@@ -51,29 +71,23 @@ agy -p <prompt> --model gemini-3.8-flash-low
 agy -p <prompt> --model claude-sonnet-4-6
 ```
 
-Pins that must not be swapped:
+Do not swap these pins:
 
-- OpenCode for Z.ai uses `zai-coding-plan/glm-5.3-flash`, not `opencode-go/`
-- Pi for Z.ai uses `zai/glm-5.3-flash` (Coding Plan), not `opencode-go/` or `zai-api`
-- Pi for Codex uses `openai-codex/gpt-5.6-luna`, not `openai/` (API billing)
+- OpenCode for Z.ai: `zai-coding-plan/glm-5.3-flash`, not `opencode-go/`
+- Pi for Z.ai: `zai/glm-5.3-flash` (Coding Plan), not `opencode-go/` or `zai-api`
+- Pi for Codex: `openai-codex/gpt-5.6-luna`, not `openai/` (API billing)
 
 Safety flags: no `--auto` (OpenCode), no `--yolo` (Hermes), no `--api-key` (Pi), no `--dangerously-skip-permissions` (`agy`).
 
-The prompt is `Quotracker Window Starter request. Respond with only "OK".`. Quotracker does not pass credentials or account identifiers; each CLI uses its existing authentication. Native spawn substitutes the prompt as an argv string (no shell). The copy button and activity command use the same prompt, POSIX-quoted for paste.
+The prompt is `Quotracker Window Starter request. Respond with only "OK".`. No credentials or account ids. Native spawn puts the prompt in argv. Copy button and log command use the same prompt, POSIX-quoted for paste.
 
-## Safety and confirmation
+## After a start
 
-- Automatic starts attempt a window at most once in five hours, including after a failed or unconfirmed attempt. The lock is `(plugin, window line)` so Antigravity Session and Claude are independent. A confirmed **Run now** on Timeline can still execute while the lock (or the global switch) would block auto-start; that attempt then holds the auto-start lock. After the CLI exits, another window can be started while the first is still waiting for quota confirmation.
+- Auto-start tries a window at most once in five hours, including after a failed or unconfirmed attempt. The lock is `(plugin, window line)`, so Antigravity Session and Claude are independent. A confirmed Run now can still execute while the lock (or Auto-start off) would block auto-start; that attempt then holds the lock. After the CLI exits, another window can start while the first is still waiting for quota confirmation.
 - Only one CLI runs at a time.
-- The model request is never retried automatically based on a rounded usage percentage.
-- After one successful CLI invocation, Quotracker refreshes only that provider's quota for up to two minutes.
-- A future 5-hour reset for that window confirms the attempt. Missing confirmation is recorded as `unconfirmed` without another model request.
-- Routine quota probes and confirmation polls are not activity records.
+- The model request is never retried from a rounded usage percentage.
+- After one successful CLI, Quotracker refreshes only that provider's quota for up to two minutes.
+- A future 5-hour reset for that window confirms the attempt. Missing confirmation is `unconfirmed` with no second model request.
+- Quota probes and confirmation polls are not start logs.
 
-## Billing routes
-
-Window Starter cannot verify the CLI account before its first request. Confirm that each CLI is authenticated to the same subscription shown by Quotracker. In particular, Z.ai must use the Coding Plan rather than a standard API balance, and Codex purchased credits may be independent of the 5-hour allowance.
-
-The store keeps the newest 500 actual CLI attempts with plugin, window, runner, timestamps, command metadata, reset confirmation, and bounded error details. Each Timeline card shows at most the newest 5 for that provider.
-
-Per-provider reset and Reset All Customization restore participation, runner, and window picks to plugin defaults. They do not change the global Window Starter switch.
+Window Starter cannot check the CLI account before the first request. Use the same subscription Quotracker shows. Z.ai must be Coding Plan, not a standard API balance. Codex purchased credits may be independent of the 5-hour allowance.
