@@ -1,6 +1,6 @@
 [package]
 name = "openquotacycle"
-version = "0.1.1"
+version = "0.2.0"
 description = "Linux desktop app for planning AI coding quotas around the 5-hour window"
 authors = ["oioi555", "Andrea Debernardi"]
 edition = "2024"
