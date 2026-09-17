@@ -2,7 +2,7 @@
   const PROVIDER_ID = "grok";
   const AUTH_PATH = "~/.grok/auth.json";
   const BILLING_URL = "https://cli-chat-proxy.grok.com/v1/billing?format=credits";
-  const USER_AGENT = "Quotracker";
+  const USER_AGENT = "OpenQuotaCycle";
 
   // Local cache of the last successful quota window. Contains only display
   // fields (used/label/resetsAt/periodDurationMs) — never tokens or secrets.
@@ -299,5 +299,5 @@
     return { plan: "SuperGrok", lines: lines };
   }
 
-  globalThis.__quotracker_plugin = { id: PROVIDER_ID, probe };
+  globalThis.__openquotacycle_plugin = { id: PROVIDER_ID, probe };
 })();

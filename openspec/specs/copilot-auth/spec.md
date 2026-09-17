@@ -5,7 +5,7 @@ Defines secure Linux Secret Service access for provider credentials without rely
 ## Requirements
 ### Requirement: Linux keychain access for plugin credentials
 
-Quotracker SHALL read and write plugin credentials through the Linux Secret Service API without requiring an external `secret-tool` executable.
+OpenQuotaCycle SHALL read and write plugin credentials through the Linux Secret Service API without requiring an external `secret-tool` executable.
 
 #### Scenario: Store service credential
 

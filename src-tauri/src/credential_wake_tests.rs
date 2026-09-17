@@ -10,7 +10,7 @@ fn temp_home(label: &str) -> PathBuf {
         .expect("time")
         .as_nanos();
     let dir = std::env::temp_dir().join(format!(
-        "quotracker-wake-{label}-{}-{nanos}",
+        "openquotacycle-wake-{label}-{}-{nanos}",
         std::process::id()
     ));
     fs::create_dir_all(&dir).expect("tmp home");

@@ -568,5 +568,5 @@
     return { plan: plan, lines: lines }
   }
 
-  globalThis.__quotracker_plugin = { id: "claude", probe }
+  globalThis.__openquotacycle_plugin = { id: "claude", probe }
 })()

@@ -166,7 +166,7 @@ describe("windowStarterRunner", () => {
         pluginId: "claude",
         runnerId: "claude",
         windowLine: "Session",
-        prompt: 'Quotracker Window Starter request. Respond with only "OK".',
+        prompt: 'OpenQuotaCycle Window Starter request. Respond with only "OK".',
         timeoutSecs: 60,
       }),
     );
@@ -174,7 +174,7 @@ describe("windowStarterRunner", () => {
     expect(windowStarterController.attempts[0].windowLine).toBe("Session");
     expect(windowStarterController.attempts[0].runnerId).toBe("claude");
     expect(windowStarterController.attempts[0].command).toContain(
-      `'Quotracker Window Starter request. Respond with only "OK".'`,
+      `'OpenQuotaCycle Window Starter request. Respond with only "OK".'`,
     );
     expect(windowStarterController.attempts[0].command).not.toContain("<prompt>");
   });

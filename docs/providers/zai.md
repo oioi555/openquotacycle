@@ -25,8 +25,8 @@ The optional [Window Starter](../window-starter.md) defaults to `zcode --prompt 
    the [Z.ai console](https://z.ai/manage-apikey/apikey-list)
 2. Set `ZAI_API_KEY` (fallback: `GLM_API_KEY`)
 
-Quotracker is a GUI app. A one-off `export ...` in a terminal session will not be visible when you launch Quotracker from
-Spotlight/Launchpad. Persist it, then restart Quotracker.
+OpenQuotaCycle is a GUI app. A one-off `export ...` in a terminal session will not be visible when you launch OpenQuotaCycle from
+Spotlight/Launchpad. Persist it, then restart OpenQuotaCycle.
 
 zsh (`~/.zshrc`):
 
@@ -40,11 +40,11 @@ fish (universal var):
 set -Ux ZAI_API_KEY "YOUR_API_KEY"
 ```
 
-3. Enable the Z.ai plugin in Quotracker settings
+3. Enable the Z.ai plugin in OpenQuotaCycle settings
 
 ## Peak Hours Status
 
-Quotracker derives the current GLM Coding Plan rate window locally from the plugin runtime clock. It does not make an
+OpenQuotaCycle derives the current GLM Coding Plan rate window locally from the plugin runtime clock. It does not make an
 additional status request.
 
 - Monday-Friday from 14:00 inclusive to 18:00 exclusive UTC+8: danger-tone header chip `Peak`

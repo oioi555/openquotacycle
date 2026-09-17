@@ -53,7 +53,7 @@ describe("trayController", () => {
 
     expect(backendMocks.setTrayTooltip).toHaveBeenCalledTimes(1);
     expect(backendMocks.setTrayTooltip).toHaveBeenCalledWith(
-      "Quotracker\nClaude: --%\nCodex: --%",
+      "OpenQuotaCycle\nClaude: --%\nCodex: --%",
     );
 
     trayController.scheduleUpdate("settings", 0);
@@ -74,7 +74,7 @@ describe("trayController", () => {
     trayController.scheduleUpdate("init", 0);
     await flush();
 
-    expect(backendMocks.setTrayTooltip).toHaveBeenCalledWith("Quotracker");
+    expect(backendMocks.setTrayTooltip).toHaveBeenCalledWith("OpenQuotaCycle");
   });
 
   it("collapses burst schedule requests into a single update", async () => {

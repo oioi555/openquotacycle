@@ -92,7 +92,7 @@ class WindowStarterRunner {
       await windowStarterController.updateAttempt(attempt.id, {
         status: "interrupted",
         completedAt: new Date().toISOString(),
-        error: "Quotracker closed before the attempt completed.",
+        error: "OpenQuotaCycle closed before the attempt completed.",
       });
     }
     this.historyReady = true;

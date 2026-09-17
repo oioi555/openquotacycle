@@ -4,7 +4,7 @@ import pluginManifest from "./plugin.json";
 
 const loadPlugin = async () => {
   await import("./plugin.js");
-  return globalThis.__quotracker_plugin;
+  return globalThis.__openquotacycle_plugin;
 };
 
 function makeUsageResponse(overrides = {}) {
@@ -59,7 +59,7 @@ function mockUsageOk(ctx, body) {
 
 describe("copilot plugin", () => {
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin;
+    delete globalThis.__openquotacycle_plugin;
     if (vi.resetModules) vi.resetModules();
   });
 

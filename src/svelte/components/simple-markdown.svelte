@@ -10,10 +10,10 @@
   function tokenUrl(token: { type: string; content: string; url?: string }): string {
     if (token.type === "link") return token.url!;
     if (token.type === "pr")
-      return `https://github.com/oioi555/quotracker/pull/${token.content.slice(1)}`;
+      return `https://github.com/oioi555/openquotacycle/pull/${token.content.slice(1)}`;
     if (token.type === "user") return `https://github.com/${token.content.slice(1)}`;
     if (token.type === "commit")
-      return `https://github.com/oioi555/quotracker/commit/${token.content}`;
+      return `https://github.com/oioi555/openquotacycle/commit/${token.content}`;
     return "#";
   }
 </script>

@@ -18,7 +18,7 @@ describe("panelFooter", () => {
     expect(screen.queryByLabelText("Options")).toBeNull();
     expect(screen.queryByText(/Next update in/)).toBeNull();
     expect(screen.queryByText("Paused")).toBeNull();
-    expect(screen.queryByText(/Quotracker/)).toBeNull();
+    expect(screen.queryByText(/OpenQuotaCycle/)).toBeNull();
   });
 
   it("navigates to Timeline and Settings roots", async () => {

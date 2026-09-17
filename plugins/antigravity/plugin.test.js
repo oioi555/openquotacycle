@@ -10,7 +10,7 @@ function makeCtx() {
 
 const loadPlugin = async () => {
   await import("./plugin.js")
-  return globalThis.__quotracker_plugin
+  return globalThis.__openquotacycle_plugin
 }
 
 // --- Fixtures ---
@@ -231,7 +231,7 @@ function makeTopicOAuthBase64(ctx, accessToken, refreshToken, expirySeconds) {
 
 describe("antigravity plugin", () => {
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin
+    delete globalThis.__openquotacycle_plugin
     vi.resetModules()
   })
 

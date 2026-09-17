@@ -55,7 +55,7 @@ describe("tray-tooltip", () => {
         { name: "Claude", percentText: "60%" },
         { name: "Codex", percentText: "--%" },
       ]),
-    ).toBe("Quotracker\nClaude: 60%\nCodex: --%");
-    expect(formatTrayTooltip([])).toBe("Quotracker");
+    ).toBe("OpenQuotaCycle\nClaude: 60%\nCodex: --%");
+    expect(formatTrayTooltip([])).toBe("OpenQuotaCycle");
   });
 });

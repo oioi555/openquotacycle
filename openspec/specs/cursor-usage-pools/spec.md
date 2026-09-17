@@ -95,4 +95,4 @@ The Cursor overview SHALL present Total Usage when available, then `Cursor` and 
 #### Scenario: Optional non-pool metrics are available
 
 - **WHEN** Cursor returns credits, request-based usage, On-demand, or Grok Bot data
-- **THEN** the corresponding existing Quotracker metric remains available without being renamed to a pool metric
+- **THEN** the corresponding existing OpenQuotaCycle metric remains available without being renamed to a pool metric

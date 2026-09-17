@@ -154,7 +154,7 @@ Returns subscription and Stripe customer balance metadata from `cursor.com`.
 
 ### Token Sources
 
-Quotracker reads Cursor auth in this order:
+OpenQuotaCycle reads Cursor auth in this order:
 
 1. **Cursor Desktop SQLite** (preferred)
 2. **Cursor CLI keychain** (fallback)
@@ -180,13 +180,13 @@ sqlite3 ~/.config/Cursor/User/globalStorage/state.vscdb \
 
 #### 2) OS keyring (fallback)
 
-Quotracker also reads these Cursor service entries from the OS keyring:
+OpenQuotaCycle also reads these Cursor service entries from the OS keyring:
 
 - `cursor-access-token`
 - `cursor-refresh-token`
 
 If neither source contains a valid session, sign in through the Cursor app.
-Quotracker does not require an unrelated `agent login` command.
+OpenQuotaCycle does not require an unrelated `agent login` command.
 
 ### Token Refresh
 

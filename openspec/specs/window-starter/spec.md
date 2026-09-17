@@ -62,7 +62,7 @@ Antigravity Session and Claude SHALL be independent windows: independent partici
 - **AND** the system MUST NOT treat it as idle or auto-start it again
 
 ### Requirement: One minimal request starts an eligible window
-For each eligible idle episode of a window, the system SHALL execute the selected host runner at most once with the fixed English prompt `Quotracker Window Starter request. Respond with only "OK".`. The system SHALL invoke the executable directly without a shell. The native host SHALL build the argument vector from the runner catalog and the `(plugin × runner × window)` pin table. The WebView MUST NOT supply arbitrary argv, environment variables, or credentials.
+For each eligible idle episode of a window, the system SHALL execute the selected host runner at most once with the fixed English prompt `OpenQuotaCycle Window Starter request. Respond with only "OK".`. The system SHALL invoke the executable directly without a shell. The native host SHALL build the argument vector from the runner catalog and the `(plugin × runner × window)` pin table. The WebView MUST NOT supply arbitrary argv, environment variables, or credentials.
 
 The host runner catalog SHALL be: `claude`, `codex`, `zcode`, `agy`, `opencode`, `hermes`, and `pi`. Allowed runners per bundled plugin SHALL be Claude → `claude` only; Codex → `codex` / `opencode` / `hermes` / `pi`; Z.ai → `zcode` / `opencode` / `hermes` / `pi`; Antigravity → `agy`. Claude's harness SHALL be Claude Code; the system MUST NOT start the Claude provider through OpenCode, Hermes, Pi, or any other third-party client. Z.ai's default harness SHALL be `zcode`; the system MUST NOT start Z.ai through Claude Code. The default runner SHALL be the plugin's first-party CLI (`claude`, `codex`, `zcode`, `agy`).
 
@@ -134,7 +134,7 @@ Pin table:
 
 #### Scenario: Prompt asks only for OK
 - **WHEN** a window start is executed
-- **THEN** the prompt is `Quotracker Window Starter request. Respond with only "OK".`
+- **THEN** the prompt is `OpenQuotaCycle Window Starter request. Respond with only "OK".`
 
 #### Scenario: WebView cannot supply argv
 - **WHEN** the frontend requests a start

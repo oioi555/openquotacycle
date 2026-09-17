@@ -16,7 +16,7 @@ Antigravity is a Google-branded Codeium fork: same language-server binary and Co
 - **Requires:** Antigravity standalone app, Antigravity IDE, or `agy` CLI running for local quota; otherwise an unexpired signed-in access token is required for the Cloud Code fallback. Antigravity or `agy` owns OAuth renewal.
 - **Offline:** after a reboot the stored access token is usually expired and no local server is running. The plugin then shows the last successful reading from a display-only snapshot with a `Stale` chip, or the start-Antigravity error when no snapshot exists yet.
 
-The optional [Window Starter](../window-starter.md) can start Antigravity's independent Session and Claude 5-hour windows through `agy`. Both default off. Session uses `--model gemini-3.8-flash-low`; Claude uses `--model claude-sonnet-4-6`. Quotracker does not pass `--dangerously-skip-permissions`. Enable each window on Customize L2 or from the Timeline Window Starter row context menu; the UI does not ask for model names.
+The optional [Window Starter](../window-starter.md) can start Antigravity's independent Session and Claude 5-hour windows through `agy`. Both default off. Session uses `--model gemini-3.8-flash-low`; Claude uses `--model claude-sonnet-4-6`. OpenQuotaCycle does not pass `--dangerously-skip-permissions`. Enable each window on Customize L2 or from the Timeline Window Starter row context menu; the UI does not ask for model names.
 
 ## Discovery
 
@@ -69,7 +69,7 @@ Only exact bucket IDs are recognized:
 
 The Gemini Pro and Flash models share the Gemini pool. Claude, GPT-OSS, and other non-Gemini models share the `3p` pool. A missing `remainingFraction` drops only that bucket; it must not be treated as full or depleted.
 
-Five-hour Session/Claude windows keep a server `resetTime` even when rounded usage is still 0% — a tiny `agy` request can leave remaining at ~100% with a live 5-hour countdown. `Not started` is only for a missing reset time. Weekly windows keep their reset even when unused. OpenQuota's Overview may still show Session `Not started` at 0% used; Quotracker intentionally shows the countdown to match `agy` and the Antigravity IDE.
+Five-hour Session/Claude windows keep a server `resetTime` even when rounded usage is still 0% — a tiny `agy` request can leave remaining at ~100% with a live 5-hour countdown. `Not started` is only for a missing reset time. Weekly windows keep their reset even when unused. OpenQuota's Overview may still show Session `Not started` at 0% used; OpenQuotaCycle intentionally shows the countdown to match `agy` and the Antigravity IDE.
 
 Optional local spend tiles read `~/.gemini/antigravity-cli/conversations/*.db` (`SELECT time_created AS ms, tokens, cost FROM generations` for the last 30 UTC days). Missing or unreadable conversation DBs must not fail quota meters.
 
@@ -242,7 +242,7 @@ message Timestamp {
 }
 ```
 
-The plugin decodes this using a minimal protobuf wire-format parser (varint + length-delimited only). The access token is short-lived; the refresh token is retained by Antigravity/`agy` for credential renewal and is ignored by Quotracker.
+The plugin decodes this using a minimal protobuf wire-format parser (varint + length-delimited only). The access token is short-lived; the refresh token is retained by Antigravity/`agy` for credential renewal and is ignored by OpenQuotaCycle.
 
 ### OS keyring (`agy` entry)
 
@@ -252,9 +252,9 @@ The `agy` CLI keeps its OAuth credentials in the OS keyring under the Secret Ser
 
 ### Credential Renewal
 
-Quotracker does not call Google's OAuth token endpoint, submit the stored refresh token, or write a newly refreshed Antigravity token. Credential renewal stays with Antigravity and `agy`.
+OpenQuotaCycle does not call Google's OAuth token endpoint, submit the stored refresh token, or write a newly refreshed Antigravity token. Credential renewal stays with Antigravity and `agy`.
 
-After boot, when the access token is expired and no local server is running, Quotracker can run a one-shot `agy -p /quota --print-timeout 1m` (host argv exactly those four tokens; no `--model`, no Window Starter prompt). `--print-timeout` is required so `/quota` is not canceled mid-command. That slash command refreshes the official CLI keyring and exits without an agent turn or a 5-hour window. The host discards stdout; quota is then read by the existing plugin probe (fresh keyring → Cloud Code). This is not Window Starter. Window Starter's Antigravity pins are `agy -p <prompt> --model gemini-3.8-flash-low` and `agy -p <prompt> --model claude-sonnet-4-6`, which start a cascade and consume quota.
+After boot, when the access token is expired and no local server is running, OpenQuotaCycle can run a one-shot `agy -p /quota --print-timeout 1m` (host argv exactly those four tokens; no `--model`, no Window Starter prompt). `--print-timeout` is required so `/quota` is not canceled mid-command. That slash command refreshes the official CLI keyring and exits without an agent turn or a 5-hour window. The host discards stdout; quota is then read by the existing plugin probe (fresh keyring → Cloud Code). This is not Window Starter. Window Starter's Antigravity pins are `agy -p <prompt> --model gemini-3.8-flash-low` and `agy -p <prompt> --model claude-sonnet-4-6`, which start a cascade and consume quota.
 
 - **Auto-start agy** (Antigravity Customize L2, default off): on a `Stale` chip or the start-agy error, run the one-shot then re-probe Antigravity. Turning the toggle on while already Stale starts that one-shot immediately. The refresh icon stays visible until the card recovers so a failed wake is not a dead end.
 - **Start agy**: the same one-shot when `agy` is on `PATH` and the card is `Stale` or showing `Antigravity session expired. Start Antigravity or agy and try again.` The callout matches Grok (title + detail). The action is an icon-only refresh button to the right of the copy, with tooltip "Start agy to refresh the session"; it spins while wake is in flight.
@@ -309,7 +309,7 @@ Base URLs tried in order:
 }
 ```
 
-Returns 401/403 if the token is invalid or expired. Quotracker reports the fallback as unavailable and does not perform a reactive OAuth refresh.
+Returns 401/403 if the token is invalid or expired. OpenQuotaCycle reports the fallback as unavailable and does not perform a reactive OAuth refresh.
 
 The response includes all models provisioned for the account. The plugin filters out non-user-facing models using three layers: (1) `isInternal: true` flag from the API, (2) empty `displayName` (catches internal autocomplete models like `chat_20706`, `tab_flash_lite_preview`), and (3) a model-ID blacklist (catches Gemini 2.5 variants and placeholders).
 

@@ -1,38 +1,38 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
-    <img src="docs/assets/logo-light.svg" alt="Quotracker logo" width="320">
+    <img src="docs/assets/logo-light.svg" alt="OpenQuotaCycle logo" width="320">
   </picture>
 </p>
 
-# Quotracker
+# OpenQuotaCycle
 
 A Linux desktop app for planning AI coding quotas around the 5-hour window.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.png">
-    <img src="docs/assets/hero-light.png" alt="Quotracker Overview leftover meters and Timeline of upcoming 5-hour and weekly resets, in dark and light" width="1348">
+    <img src="docs/assets/hero-light.png" alt="OpenQuotaCycle Overview leftover meters and Timeline of upcoming 5-hour and weekly resets, in dark and light" width="1348">
   </picture>
 </p>
 
 Weekly limits are the budget. You cannot raise them from here, and using less is easy. Using *more* is not: the 5-hour window is a throttle. Start a long session against the weekly budget, and the session cap cuts the work short. For a 5-hour window, the only way to raise consumption per hour is to work across a reset and use two windows in one stretch. That only happens if the counter is already running.
 
-Quotracker keeps that environment ready. [Window Starter](docs/window-starter.md) starts idle 5-hour windows with a one-shot CLI request so you are not waiting for the first tick. Timeline shows when the next reset is. Overview hatches leftover that has pulled away from the pace tick — more you can still burn, and it melts at reset. In the last hour of a 5-hour window by default, leftover glows as melting so you can spend it across the reset.
+OpenQuotaCycle keeps that environment ready. [Window Starter](docs/window-starter.md) starts idle 5-hour windows with a one-shot CLI request so you are not waiting for the first tick. Timeline shows when the next reset is. Overview hatches leftover that has pulled away from the pace tick — more you can still burn, and it melts at reset. In the last hour of a 5-hour window by default, leftover glows as melting so you can spend it across the reset.
 
 The window lives in the tray. Close it to hide; click the icon or the global shortcut to bring it back.
 
 ## Download
 
-[**Latest release**](https://github.com/oioi555/quotracker/releases/latest) — Linux `.deb` and `.AppImage`
+[**Latest release**](https://github.com/oioi555/openquotacycle/releases/latest) — Linux `.deb` and `.AppImage`
 
 **Arch Linux**
 
 ```bash
-paru -S quotracker-bin
+paru -S openquotacycle-bin
 ```
 
-That package unpacks the GitHub Release `.deb`. From a checkout instead (`quotracker-git`):
+That package unpacks the GitHub Release `.deb`. From a checkout instead (`openquotacycle-git`):
 
 ```bash
 cd aur
@@ -80,17 +80,16 @@ bun run typecheck
 To keep the app running after the terminal detaches:
 
 ```bash
-setsid bun tauri dev </dev/null >~/.cache/quotracker-dev.log 2>&1 &
+setsid bun tauri dev </dev/null >~/.cache/openquotacycle-dev.log 2>&1 &
 ```
 
 ## Credits
 
-Visual language and desktop UX were informed by [OpenQuota](https://github.com/deviffyy/OpenQuota).
+UX reference: [OpenQuota](https://github.com/deviffyy/OpenQuota). OpenUsage is Mac-only and was never run here.
 
-The codebase includes earlier open-source work:
+Linux old-Tauri base: [Tuxmeter](https://github.com/debba/tuxmeter) by [Andrea Debernardi](https://github.com/debba).
 
-- [OpenUsage](https://github.com/robinebers/openusage) by [Robin Ebers](https://github.com/robinebers)
-- [Tuxmeter](https://github.com/debba/tuxmeter) by [Andrea Debernardi](https://github.com/debba)
+Tuxmeter's Mac original: [OpenUsage](https://github.com/robinebers/openusage) by [Robin Ebers](https://github.com/robinebers).
 
 ## License
 
@@ -120,6 +119,6 @@ bun tauri build
 
 Output: `src-tauri/target/release/bundle/`.
 
-The checkout recipe builds that same tree. `quotracker-bin` on the AUR downloads the GitHub Release `.deb`.
+The checkout recipe builds that same tree. `openquotacycle-bin` on the AUR downloads the GitHub Release `.deb`.
 
 </details>

@@ -381,7 +381,7 @@ describe("customizeProvider Window Starter", () => {
 
     await fireEvent.click(screen.getByLabelText("Copy runner command"));
     expect(writeText).toHaveBeenCalledWith(
-      `claude -p 'Quotracker Window Starter request. Respond with only "OK".' --model claude-haiku-4-5 --tools "" --max-turns 1 --no-session-persistence`,
+      `claude -p 'OpenQuotaCycle Window Starter request. Respond with only "OK".' --model claude-haiku-4-5 --tools "" --max-turns 1 --no-session-persistence`,
     );
   });
 

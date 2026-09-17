@@ -18,8 +18,8 @@ export const makeCtx = () => {
     app: {
       version: "0.0.0",
       platform: "darwin",
-      appDataDir: "/tmp/quotracker-test",
-      pluginDataDir: "/tmp/quotracker-test/plugin",
+      appDataDir: "/tmp/openquotacycle-test",
+      pluginDataDir: "/tmp/openquotacycle-test/plugin",
     },
     host: {
       fs: {

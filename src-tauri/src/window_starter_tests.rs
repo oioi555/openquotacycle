@@ -315,7 +315,7 @@ fn unknown_plugin_or_window_is_unsupported() {
 
 #[test]
 fn find_executable_resolves_on_path() {
-    let dir = std::env::temp_dir().join(format!("quotracker-ws-test-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("openquotacycle-ws-test-{}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
     let exe = dir.join("ws-fake-bin");
     std::fs::write(&exe, b"#!/bin/sh\nexit 0\n").unwrap();

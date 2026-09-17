@@ -60,9 +60,9 @@
     onclick={handleBackdropClick}
   >
     <div class="bg-card rounded-md border shadow-xl p-6 max-w-xs w-full mx-4 text-center animate-in fade-in zoom-in-95 duration-200">
-      <img src="/icon.svg" alt="Quotracker" class="w-16 h-16 mx-auto mb-3 rounded-xl" />
+      <img src="/icon.svg" alt="OpenQuotaCycle" class="w-16 h-16 mx-auto mb-3 rounded-xl" />
 
-      <h2 class="text-xl font-semibold mb-1">Quotracker</h2>
+      <h2 class="text-xl font-semibold mb-1">OpenQuotaCycle</h2>
 
       <div class="flex flex-col items-center gap-2 mb-4">
         <span class="inline-block text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
@@ -85,7 +85,17 @@
           </button>
         </p>
         <p>
-          Based on
+          UX reference
+          <button
+            type="button"
+            onclick={() => openUrl("https://github.com/deviffyy/OpenQuota").catch(console.error)}
+            class="text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+          >
+            OpenQuota
+          </button>
+        </p>
+        <p>
+          Linux old-Tauri base
           <button
             type="button"
             onclick={() => openUrl("https://github.com/debba/tuxmeter").catch(console.error)}
@@ -108,7 +118,7 @@
           Open source on
           <button
             type="button"
-            onclick={() => openUrl("https://github.com/oioi555/quotracker").catch(console.error)}
+            onclick={() => openUrl("https://github.com/oioi555/openquotacycle").catch(console.error)}
             class="text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             GitHub

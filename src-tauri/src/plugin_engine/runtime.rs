@@ -102,9 +102,9 @@ pub fn run_probe(plugin: &LoadedPlugin, app_data_dir: &PathBuf, app_version: &st
         }
 
         let globals = ctx.globals();
-        let plugin_obj: Object = match globals.get("__quotracker_plugin") {
+        let plugin_obj: Object = match globals.get("__openquotacycle_plugin") {
             Ok(obj) => obj,
-            Err(_) => return error_output(plugin, "missing __quotracker_plugin".to_string()),
+            Err(_) => return error_output(plugin, "missing __openquotacycle_plugin".to_string()),
         };
 
         let probe_fn: rquickjs::Function = match plugin_obj.get("probe") {
@@ -113,7 +113,7 @@ pub fn run_probe(plugin: &LoadedPlugin, app_data_dir: &PathBuf, app_version: &st
         };
 
         let probe_ctx: Value = globals
-            .get("__quotracker_ctx")
+            .get("__openquotacycle_ctx")
             .unwrap_or_else(|_| Value::new_undefined(ctx.clone()));
 
         let result_value: Value = match probe_fn.call((probe_ctx,)) {
@@ -543,7 +543,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .unwrap_or_default()
             .as_nanos();
-        std::env::temp_dir().join(format!("quotracker-test-{}-{}", label, nanos))
+        std::env::temp_dir().join(format!("openquotacycle-test-{}-{}", label, nanos))
     }
 
     fn error_text(output: PluginOutput) -> String {
@@ -557,7 +557,7 @@ mod tests {
     fn run_probe_returns_thrown_string_from_sync_error() {
         let plugin = test_plugin(
             r#"
-            globalThis.__quotracker_plugin = {
+            globalThis.__openquotacycle_plugin = {
                 probe() {
                     throw "boom";
                 }
@@ -569,10 +569,25 @@ mod tests {
     }
 
     #[test]
-    fn run_probe_returns_thrown_string_from_async_error() {
+    fn run_probe_reports_missing_openquotacycle_plugin_when_only_legacy_global_is_set() {
         let plugin = test_plugin(
             r#"
             globalThis.__quotracker_plugin = {
+                probe() {
+                    return { plan: "Pro", lines: [] };
+                }
+            };
+            "#,
+        );
+        let output = run_probe(&plugin, &temp_app_dir("legacy-global"), "0.0.0");
+        assert_eq!(error_text(output), "missing __openquotacycle_plugin");
+    }
+
+    #[test]
+    fn run_probe_returns_thrown_string_from_async_error() {
+        let plugin = test_plugin(
+            r#"
+            globalThis.__openquotacycle_plugin = {
                 probe: async function () {
                     throw "boom";
                 }
@@ -608,7 +623,7 @@ mod tests {
     fn run_probe_accepts_empty_lines() {
         let plugin = test_plugin(
             r#"
-            globalThis.__quotracker_plugin = {
+            globalThis.__openquotacycle_plugin = {
                 probe() {
                     return { plan: "Pro", lines: [] };
                 }
@@ -626,7 +641,7 @@ mod tests {
     fn run_probe_parses_status_chips() {
         let plugin = test_plugin(
             r#"
-            globalThis.__quotracker_plugin = {
+            globalThis.__openquotacycle_plugin = {
                 probe() {
                     return {
                         plan: "Pro",
@@ -648,7 +663,7 @@ mod tests {
     fn run_probe_status_chip_helper_matches_raw_statuses() {
         let plugin = test_plugin(
             r#"
-            globalThis.__quotracker_plugin = {
+            globalThis.__openquotacycle_plugin = {
                 probe(ctx) {
                     return {
                         plan: "Pro",
@@ -670,7 +685,7 @@ mod tests {
     fn run_probe_rejects_badge_lines() {
         let plugin = test_plugin(
             r#"
-            globalThis.__quotracker_plugin = {
+            globalThis.__openquotacycle_plugin = {
                 probe() {
                     return {
                         lines: [{ type: "badge", label: "Status", text: "Nope" }],
@@ -687,7 +702,7 @@ mod tests {
     fn run_probe_keeps_lines_when_result_includes_error() {
         let plugin = test_plugin(
             r#"
-            globalThis.__quotracker_plugin = {
+            globalThis.__openquotacycle_plugin = {
                 probe() {
                     return {
                         plan: "SuperGrok",

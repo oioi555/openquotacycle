@@ -3,7 +3,7 @@ import { makeCtx } from "../test-helpers.js"
 
 const loadPlugin = async () => {
   await import("./plugin.js")
-  return globalThis.__quotracker_plugin
+  return globalThis.__openquotacycle_plugin
 }
 
 const LINUX_STATE_DB = "~/.config/Cursor/User/globalStorage/state.vscdb"
@@ -18,7 +18,7 @@ function makeJwt(payload) {
 
 describe("cursor plugin", () => {
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin
+    delete globalThis.__openquotacycle_plugin
     vi.resetModules()
   })
 

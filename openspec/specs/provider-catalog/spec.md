@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Defines which AI coding providers Quotracker ships, which unique plugins are removed, and which Linux-only extras stay outside the OpenUsage official set.
+Defines which AI coding providers OpenQuotaCycle ships, which unique plugins are removed, and which Linux-only extras stay outside the OpenUsage official set.
 
 ## Requirements
 
 ### Requirement: Official provider set matches current OpenUsage
 
-Quotracker SHALL treat the current OpenUsage official providers as its supported set: Antigravity, Claude, Codex, Copilot, Cursor, Devin, Grok, OpenCode, OpenRouter, and Z.ai. The bundled plugin id for OpenCode SHALL remain `opencode-go`. Devin SHALL be listed as official and unimplemented until a later change.
+OpenQuotaCycle SHALL treat the current OpenUsage official providers as its supported set: Antigravity, Claude, Codex, Copilot, Cursor, Devin, Grok, OpenCode, OpenRouter, and Z.ai. The bundled plugin id for OpenCode SHALL remain `opencode-go`. Devin SHALL be listed as official and unimplemented until a later change.
 
 #### Scenario: README lists the official set
 

@@ -155,7 +155,7 @@ Reads an environment variable by name.
 - Returns `null` when missing
 - Variable must be whitelisted first in `src-tauri/src/plugin_engine/host_api.rs`
 - Resolution order: current process env first, then a login+interactive shell lookup
-- Values may be cached for the app session; restart Quotracker after changing shell config
+- Values may be cached for the app session; restart OpenQuotaCycle after changing shell config
 
 ### Example
 
@@ -237,8 +237,8 @@ Reads a generic password from the OS keyring.
 
 ### Behavior
 
-- **Linux**: Secret Service via `oo7` (this is what Quotracker uses)
-- Host code also has a macOS keychain path; Quotracker does not ship for macOS
+- **Linux**: Secret Service via `oo7` (this is what OpenQuotaCycle uses)
+- Host code also has a macOS keychain path; OpenQuotaCycle does not ship for macOS
 - **Throws if not found**: Returns the password string if found, throws otherwise
 
 ### Example

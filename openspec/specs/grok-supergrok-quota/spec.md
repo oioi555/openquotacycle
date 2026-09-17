@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Provide SuperGrok subscription quota in Quotracker by reading GrokBuild's
+Provide SuperGrok subscription quota in OpenQuotaCycle by reading GrokBuild's
 `~/.grok/auth.json` credentials, without owning any OAuth refresh or credential
 persistence.
 
 ## Background
 
-GrokBuild owns the `~/.grok/auth.json` store and its token refresh, so Quotracker
+GrokBuild owns the `~/.grok/auth.json` store and its token refresh, so OpenQuotaCycle
 only reads the file and must never write to it or call OAuth endpoints. This
 avoids races with GrokBuild's own auth updates.
 

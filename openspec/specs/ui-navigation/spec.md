@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Defines how users move between Quotracker's screens: three footer root tabs (Overview, Timeline, Settings) with nested screens under their parent tab, back-bar chrome on nested screens, dashboard teaser entries, and keyboard/tray navigation — replacing the former side-nav activity rail.
+Defines how users move between OpenQuotaCycle's screens: three footer root tabs (Overview, Timeline, Settings) with nested screens under their parent tab, back-bar chrome on nested screens, dashboard teaser entries, and keyboard/tray navigation — replacing the former side-nav activity rail.
 
 ## Requirements
 

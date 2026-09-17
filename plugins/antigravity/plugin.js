@@ -887,5 +887,5 @@
     throw "Antigravity session expired. Start Antigravity or agy and try again."
   }
 
-  globalThis.__quotracker_plugin = { id: "antigravity", probe: probe }
+  globalThis.__openquotacycle_plugin = { id: "antigravity", probe: probe }
 })()

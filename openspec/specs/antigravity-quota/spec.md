@@ -1,7 +1,7 @@
 # antigravity-quota Specification
 
 ## Purpose
-Provides reliable Antigravity quota reporting for authenticated Linux installations of the standalone Antigravity app and Antigravity IDE in Quotracker.
+Provides reliable Antigravity quota reporting for authenticated Linux installations of the standalone Antigravity app and Antigravity IDE in OpenQuotaCycle.
 
 ## Requirements
 

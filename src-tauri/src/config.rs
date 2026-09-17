@@ -3,7 +3,7 @@ use serde::Deserialize;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 
-/// Proxy configuration loaded from ~/.config/quotracker/config.json
+/// Proxy configuration loaded from ~/.config/openquotacycle/config.json
 #[derive(Debug, Clone, Deserialize)]
 pub struct ProxyConfig {
     pub enabled: bool,
@@ -34,9 +34,9 @@ pub fn get_resolved_proxy() -> Option<&'static ResolvedProxy> {
         .as_ref()
 }
 
-/// Config file: ~/.config/quotracker/config.json
+/// Config file: ~/.config/openquotacycle/config.json
 fn config_path() -> Option<PathBuf> {
-    dirs::config_dir().map(|dir| dir.join("quotracker").join("config.json"))
+    dirs::config_dir().map(|dir| dir.join("openquotacycle").join("config.json"))
 }
 
 /// Loads config from disk, resolves proxy, logs result.

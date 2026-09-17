@@ -8,7 +8,7 @@ const AUTH_KEY_NAME = "https://auth.x.ai::b1a00492-073a-47ea-816f-4c329264a828";
 
 const loadPlugin = async () => {
   await import("./plugin.js");
-  return globalThis.__quotracker_plugin;
+  return globalThis.__openquotacycle_plugin;
 };
 
 // Grok Build keys are JWTs; build a deterministic fake so tests never carry a
@@ -45,7 +45,7 @@ function setBillingResponse(ctx, body, status = 200, token = "grok-access-token"
     expect(opts.url).toBe("https://cli-chat-proxy.grok.com/v1/billing?format=credits");
     expect(opts.headers.Authorization).toBe("Bearer " + token);
     expect(opts.headers.Accept).toBe("application/json");
-    expect(opts.headers["User-Agent"]).toBe("Quotracker");
+    expect(opts.headers["User-Agent"]).toBe("OpenQuotaCycle");
     expect(opts.headers["X-XAI-Token-Auth"]).toBe("xai-grok-cli");
     expect(opts.headers["x-grok-client-surface"]).toBe("grok-build");
     expect(opts.headers["x-grok-client-version"]).toBe("1.0.0");
@@ -55,7 +55,7 @@ function setBillingResponse(ctx, body, status = 200, token = "grok-access-token"
 
 describe("grok plugin", () => {
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin;
+    delete globalThis.__openquotacycle_plugin;
     vi.resetModules();
   });
 
@@ -303,7 +303,7 @@ describe("grok plugin", () => {
 
     const plugin = await loadPlugin();
     plugin.probe(ctx);
-    expect(ctx.host.fs.exists("/tmp/quotracker-test/plugin/quota-snapshot.json")).toBe(false);
+    expect(ctx.host.fs.exists("/tmp/openquotacycle-test/plugin/quota-snapshot.json")).toBe(false);
   });
 
   it("omits Daily and Period progress lines", async () => {
@@ -493,7 +493,7 @@ describe("grok plugin", () => {
   });
 
   describe("stale snapshot fallback", () => {
-    const SNAPSHOT_PATH = "/tmp/quotracker-test/plugin/quota-snapshot.json";
+    const SNAPSHOT_PATH = "/tmp/openquotacycle-test/plugin/quota-snapshot.json";
     const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
     function setSnapshot(ctx, window = {}) {

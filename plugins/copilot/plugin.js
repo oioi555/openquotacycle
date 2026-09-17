@@ -259,7 +259,7 @@
       headers: {
         Authorization: "token " + token,
         Accept: "application/vnd.github+json",
-        "User-Agent": "Quotracker",
+        "User-Agent": "OpenQuotaCycle",
         "X-GitHub-Api-Version": "2022-11-28",
       },
       timeoutMs: 15000,
@@ -364,5 +364,5 @@
     return { plan: mapped.plan, lines: mapped.lines }
   }
 
-  globalThis.__quotracker_plugin = { id: "copilot", probe }
+  globalThis.__openquotacycle_plugin = { id: "copilot", probe }
 })()

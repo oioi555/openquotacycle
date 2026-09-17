@@ -1,12 +1,12 @@
 [package]
-name = "quotracker"
+name = "openquotacycle"
 version = "0.1.1"
 description = "Linux desktop app for planning AI coding quotas around the 5-hour window"
 authors = ["oioi555", "Andrea Debernardi"]
 edition = "2024"
 
 [lib]
-name = "quotracker_lib"
+name = "openquotacycle_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

@@ -8,7 +8,7 @@ export interface Release {
 }
 
 export async function fetchReleaseByTag(tag: string): Promise<Release | null> {
-  const url = `https://api.github.com/repos/oioi555/quotracker/releases/tags/${encodeURIComponent(tag)}`;
+  const url = `https://api.github.com/repos/oioi555/openquotacycle/releases/tags/${encodeURIComponent(tag)}`;
   const res = await fetch(url);
 
   if (res.status === 404) {

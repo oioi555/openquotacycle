@@ -70,7 +70,7 @@ class TrayController {
                 displayMode: this.inputs.displayMode,
               }),
             )
-          : "Quotracker";
+          : "OpenQuotaCycle";
 
       if (tooltip === this.lastTooltip) {
         finalizeUpdate();

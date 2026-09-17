@@ -108,7 +108,7 @@
               <p class="text-[10px] text-muted-foreground text-center">
                 Looking for older versions? Check the
                 <button
-                  onclick={() => openUrl("https://github.com/oioi555/quotracker/releases").catch(console.error)}
+                  onclick={() => openUrl("https://github.com/oioi555/openquotacycle/releases").catch(console.error)}
                   class="text-[#58a6ff] hover:underline"
                 >
                   full changelog
@@ -122,7 +122,7 @@
           <span class="text-sm font-medium mb-1">No specific notes for v{currentVersion}</span>
           <span class="text-xs mb-4">This version might be a pre-release or local build.</span>
           <button
-            onclick={() => openUrl("https://github.com/oioi555/quotracker/releases").catch(console.error)}
+            onclick={() => openUrl("https://github.com/oioi555/openquotacycle/releases").catch(console.error)}
             class="text-xs text-[#58a6ff] hover:underline"
           >
             View all releases on GitHub

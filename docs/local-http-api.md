@@ -1,6 +1,6 @@
 # Local HTTP API
 
-Quotracker exposes a read-only HTTP API on the loopback interface so other local apps can consume the same usage data shown on Overview.
+OpenQuotaCycle exposes a read-only HTTP API on the loopback interface so other local apps can consume the same usage data shown on Overview.
 
 **Base URL:** `http://127.0.0.1:6736`
 

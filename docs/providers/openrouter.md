@@ -4,7 +4,7 @@
 
 ## Overview
 
-- **Key order:** `~/.config/quotracker/openrouter.json` (`apiKey` / `api_key` / `key`) → `OPENROUTER_API_KEY` → OpenCode `~/.local/share/opencode/auth.json` `openrouter.key`
+- **Key order:** `~/.config/openquotacycle/openrouter.json` (`apiKey` / `api_key` / `key`) → `OPENROUTER_API_KEY` → OpenCode `~/.local/share/opencode/auth.json` `openrouter.key`
 - **APIs:** `GET https://openrouter.ai/api/v1/credits` and `GET https://openrouter.ai/api/v1/key`
 - **Provider ID:** `openrouter`
 - **Usage scope:** key-wide usage (all models, including `x-ai/*`)
@@ -20,7 +20,7 @@ The first non-empty key in that order enables the plugin. Config file example:
 ```
 
 If no key is found, the plugin shows an error to add a key in
-`~/.config/quotracker/openrouter.json`, `OPENROUTER_API_KEY`, or OpenCode.
+`~/.config/openquotacycle/openrouter.json`, `OPENROUTER_API_KEY`, or OpenCode.
 
 ## Data Sources
 
@@ -39,7 +39,7 @@ Credits/Balance from remaining management credits.
 |---|---|
 | Authorization | `Bearer <key>` |
 | Accept | `application/json` |
-| User-Agent | `Quotracker` |
+| User-Agent | `OpenQuotaCycle` |
 
 #### Response Shape
 

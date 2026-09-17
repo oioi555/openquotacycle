@@ -6,7 +6,7 @@ let plugin = null
 
 beforeAll(async () => {
   await import("./plugin.js")
-  plugin = globalThis.__quotracker_plugin
+  plugin = globalThis.__openquotacycle_plugin
 })
 
 const loadPlugin = async () => plugin

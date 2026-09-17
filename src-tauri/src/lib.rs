@@ -1,5 +1,6 @@
 mod config;
 mod credential_wake;
+mod legacy_migration;
 mod local_http_api;
 mod notify;
 mod panel;
@@ -414,12 +415,14 @@ pub fn run() {
             use tauri::Manager;
 
             let version = app.package_info().version.to_string();
-            log::info!("Quotracker v{} starting", version);
+            log::info!("OpenQuotaCycle v{} starting", version);
 
             // Load config early (lazy init via OnceLock, zero-cost after)
+            legacy_migration::migrate_xdg_config_from_dirs();
             let _proxy = config::get_resolved_proxy();
 
             let app_data_dir = app.path().app_data_dir().expect("no app data dir");
+            legacy_migration::migrate_app_data_from_new_dir(&app_data_dir);
             let resource_dir = app.path().resource_dir().expect("no resource dir");
             let app_data_dir_tail = app_data_dir
                 .file_name()

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { makeCtx } from "../test-helpers.js";
 import pluginManifest from "./plugin.json";
 
-const CONFIG_PATH = "~/.config/quotracker/openrouter.json";
+const CONFIG_PATH = "~/.config/openquotacycle/openrouter.json";
 const AUTH_PATH = "~/.local/share/opencode/auth.json";
 const KEY_URL = "https://openrouter.ai/api/v1/key";
 const CREDITS_URL = "https://openrouter.ai/api/v1/credits";
@@ -13,7 +13,7 @@ const OPENCODE_KEY = "sk-or-v1-opencode-key";
 
 const loadPlugin = async () => {
   await import("./plugin.js");
-  return globalThis.__quotracker_plugin;
+  return globalThis.__openquotacycle_plugin;
 };
 
 function setAuth(ctx, key = OPENCODE_KEY) {
@@ -71,7 +71,7 @@ function mockEndpoints(ctx, { credits, key, expectedKey = TEST_KEY } = {}) {
 
 describe("openrouter plugin", () => {
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin;
+    delete globalThis.__openquotacycle_plugin;
     vi.resetModules();
   });
 
@@ -104,7 +104,7 @@ describe("openrouter plugin", () => {
     const ctx = makeCtx();
     const plugin = await loadPlugin();
     expect(() => plugin.probe(ctx)).toThrow(
-      "No OpenRouter API key. Set OPENROUTER_API_KEY or add it to ~/.config/quotracker/openrouter.json.",
+      "No OpenRouter API key. Set OPENROUTER_API_KEY or add it to ~/.config/openquotacycle/openrouter.json.",
     );
   });
 
@@ -113,7 +113,7 @@ describe("openrouter plugin", () => {
     ctx.host.fs.writeText(AUTH_PATH, JSON.stringify({ openrouter: { type: "api" } }));
     const plugin = await loadPlugin();
     expect(() => plugin.probe(ctx)).toThrow(
-      "No OpenRouter API key. Set OPENROUTER_API_KEY or add it to ~/.config/quotracker/openrouter.json.",
+      "No OpenRouter API key. Set OPENROUTER_API_KEY or add it to ~/.config/openquotacycle/openrouter.json.",
     );
   });
 
@@ -163,7 +163,7 @@ describe("openrouter plugin", () => {
     const plugin = await loadPlugin();
     plugin.probe(ctx);
 
-    delete globalThis.__quotracker_plugin;
+    delete globalThis.__openquotacycle_plugin;
     vi.resetModules();
     const ctx2 = makeCtx();
     setConfig(ctx2, { key: CONFIG_KEY });

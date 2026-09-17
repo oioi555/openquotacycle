@@ -176,7 +176,7 @@
     >
       <Info class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
       <span class="min-w-0 flex-1">
-        <span class="block truncate text-sm font-semibold">Quotracker</span>
+        <span class="block truncate text-sm font-semibold">OpenQuotaCycle</span>
         <span class="block truncate text-xs text-muted-foreground">v{version} · Changelog & credits</span>
       </span>
       <ChevronRight class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />

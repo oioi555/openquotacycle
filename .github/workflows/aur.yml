@@ -1,6 +1,6 @@
 name: Publish AUR
 
-# After publish.yml creates the GitHub Release (.deb), push quotracker-bin to AUR.
+# After publish.yml creates the GitHub Release (.deb), push openquotacycle-bin to AUR.
 # Required secret: AUR_SSH_PRIVATE_KEY (ed25519 registered on aur.archlinux.org).
 # Same key type as oioi555/openwhispr-aur. Missing secret skips this job.
 
@@ -84,7 +84,7 @@ jobs:
           VERSION: ${{ steps.ver.outputs.version }}
         run: |
           set -euo pipefail
-          PKG=aur/quotracker-bin/PKGBUILD
+          PKG=aur/openquotacycle-bin/PKGBUILD
           DEB_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/${deb_name}"
           sed -i \
             -e "s/^pkgver=.*/pkgver=${VERSION}/" \
@@ -94,7 +94,7 @@ jobs:
             "$PKG"
 
           {
-            echo "pkgbase = quotracker-bin"
+            echo "pkgbase = openquotacycle-bin"
             echo "	pkgdesc = Linux desktop app for planning AI coding quotas around the 5-hour window"
             echo "	pkgver = ${VERSION}"
             echo "	pkgrel = 1"
@@ -103,15 +103,21 @@ jobs:
             echo "	license = MIT"
             echo "	depends = webkit2gtk-4.1"
             echo "	depends = gtk3"
-            echo "	provides = quotracker"
+            echo "	provides = openquotacycle"
+            echo "	conflicts = openquotacycle"
             echo "	conflicts = quotracker"
+            echo "	conflicts = quotracker-bin"
+            echo "	conflicts = quotracker-git"
+            echo "	replaces = quotracker"
+            echo "	replaces = quotracker-bin"
+            echo "	replaces = quotracker-git"
             echo "	options = !strip"
             echo "	options = !debug"
             echo "	source = ${DEB_URL}"
             echo "	noextract = ${deb_name}"
             echo "	sha256sums = ${sha256}"
-            echo "pkgname = quotracker-bin"
-          } > aur/quotracker-bin/.SRCINFO
+            echo "pkgname = openquotacycle-bin"
+          } > aur/openquotacycle-bin/.SRCINFO
 
       - name: Push to AUR
         if: steps.secret.outputs.present == 'true'
@@ -127,16 +133,16 @@ jobs:
           printf 'Host aur.archlinux.org\n  IdentityFile ~/.ssh/aur_key\n  User aur\n' \
             >> ~/.ssh/config
 
-          git clone "ssh://aur@aur.archlinux.org/quotracker-bin.git" aur-push
-          cp aur/quotracker-bin/PKGBUILD aur-push/PKGBUILD
-          cp aur/quotracker-bin/.SRCINFO aur-push/.SRCINFO
+          git clone "ssh://aur@aur.archlinux.org/openquotacycle-bin.git" aur-push
+          cp aur/openquotacycle-bin/PKGBUILD aur-push/PKGBUILD
+          cp aur/openquotacycle-bin/.SRCINFO aur-push/.SRCINFO
 
           git -C aur-push config user.name "oioi555"
           git -C aur-push config user.email "oioi555x@gmail.com"
           git -C aur-push add PKGBUILD .SRCINFO
           if git -C aur-push diff --cached --quiet; then
-            echo "AUR quotracker-bin already at ${VERSION}"
+            echo "AUR openquotacycle-bin already at ${VERSION}"
             exit 0
           fi
-          git -C aur-push commit -m "upgpkg: quotracker-bin ${VERSION}-1"
+          git -C aur-push commit -m "upgpkg: openquotacycle-bin ${VERSION}-1"
           git -C aur-push push

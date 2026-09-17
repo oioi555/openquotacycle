@@ -114,7 +114,7 @@ fn env_shell_args(shell_name: &str, name: &str) -> (String, String, String) {
             "-l".to_string(),
             "-c".to_string(),
             format!(
-                "if set -q {name}; printf '__QUOTRACKER_ENV__%s\\n' \"${name}\"; end",
+                "if set -q {name}; printf '__OPENQUOTACYCLE_ENV__%s\\n' \"${name}\"; end",
                 name = name
             ),
         )
@@ -123,7 +123,7 @@ fn env_shell_args(shell_name: &str, name: &str) -> (String, String, String) {
             "-lc".to_string(),
             String::new(),
             format!(
-                "value=\"${{{}}}\"; if [ -n \"$value\" ]; then printf '__QUOTRACKER_ENV__%s\\n' \"$value\"; fi",
+                "value=\"${{{}}}\"; if [ -n \"$value\" ]; then printf '__OPENQUOTACYCLE_ENV__%s\\n' \"$value\"; fi",
                 name
             ),
         )
@@ -173,7 +173,7 @@ fn read_env_from_shell_program(shell: &str, name: &str) -> Option<String> {
     String::from_utf8_lossy(&output.stdout)
         .lines()
         .map(|line| line.trim())
-        .filter_map(|line| line.strip_prefix("__QUOTRACKER_ENV__"))
+        .filter_map(|line| line.strip_prefix("__OPENQUOTACYCLE_ENV__"))
         .map(|value| value.trim())
         .find(|value| !value.is_empty())
         .map(|value| value.to_string())
@@ -196,7 +196,7 @@ fn current_keychain_account_from_user_env(user_env: Option<String>) -> String {
             }
         })
         .or_else(|| read_env_value_via_command("id", &["-un"]))
-        .unwrap_or_else(|| "quotracker-user".to_string())
+        .unwrap_or_else(|| "openquotacycle-user".to_string())
 }
 
 fn current_keychain_account() -> String {
@@ -261,7 +261,7 @@ mod keychain_platform {
     }
 
     pub fn write_password(service: &str, value: &str) -> Result<(), String> {
-        let label = format!("Quotracker - {}", service);
+        let label = format!("OpenQuotaCycle - {}", service);
         let attrs = HashMap::from([("service", service)]);
         runtime()?.block_on(do_write(&label, attrs, value))
     }
@@ -271,7 +271,7 @@ mod keychain_platform {
         account: &str,
         value: &str,
     ) -> Result<(), String> {
-        let label = format!("Quotracker - {}", service);
+        let label = format!("OpenQuotaCycle - {}", service);
         let attrs = HashMap::from([("service", service), ("account", account)]);
         runtime()?.block_on(do_write(&label, attrs, value))
     }
@@ -602,7 +602,7 @@ pub fn inject_host_api<'js>(
     inject_ls(ctx, &host, plugin_id)?;
 
     probe_ctx.set("host", host)?;
-    globals.set("__quotracker_ctx", probe_ctx)?;
+    globals.set("__openquotacycle_ctx", probe_ctx)?;
 
     Ok(())
 }
@@ -882,8 +882,8 @@ fn inject_http<'js>(ctx: &Ctx<'js>, host: &Object<'js>, plugin_id: &str) -> rqui
     ctx.eval::<(), _>(
         r#"
         (function() {
-            // Will be patched after __quotracker_ctx is set.
-            if (typeof __quotracker_ctx !== "undefined") {
+            // Will be patched after __openquotacycle_ctx is set.
+            if (typeof __openquotacycle_ctx !== "undefined") {
                 void 0;
             }
         })();
@@ -900,8 +900,8 @@ pub fn patch_http_wrapper(ctx: &rquickjs::Ctx<'_>) -> rquickjs::Result<()> {
     ctx.eval::<(), _>(
         r#"
         (function() {
-            var rawFn = __quotracker_ctx.host.http._requestRaw;
-            __quotracker_ctx.host.http.request = function(req) {
+            var rawFn = __openquotacycle_ctx.host.http._requestRaw;
+            __openquotacycle_ctx.host.http.request = function(req) {
                 var json = JSON.stringify({
                     url: req.url,
                     method: req.method || "GET",
@@ -919,12 +919,12 @@ pub fn patch_http_wrapper(ctx: &rquickjs::Ctx<'_>) -> rquickjs::Result<()> {
     )
 }
 
-/// Inject utility APIs (line builders, formatters, base64, jwt) onto __quotracker_ctx
+/// Inject utility APIs (line builders, formatters, base64, jwt) onto __openquotacycle_ctx
 pub fn inject_utils(ctx: &rquickjs::Ctx<'_>) -> rquickjs::Result<()> {
     ctx.eval::<(), _>(
         r#"
         (function() {
-            var ctx = __quotracker_ctx;
+            var ctx = __openquotacycle_ctx;
 
             // Line builders (options object API)
             ctx.line = {
@@ -1439,8 +1439,8 @@ pub fn patch_ls_wrapper(ctx: &rquickjs::Ctx<'_>) -> rquickjs::Result<()> {
     ctx.eval::<(), _>(
         r#"
         (function() {
-            var rawFn = __quotracker_ctx.host.ls._discoverRaw;
-            __quotracker_ctx.host.ls.discover = function(opts) {
+            var rawFn = __openquotacycle_ctx.host.ls._discoverRaw;
+            __openquotacycle_ctx.host.ls.discover = function(opts) {
                 var optsJson;
                 try { optsJson = JSON.stringify(opts); } catch (e) { return null; }
                 var json = rawFn(optsJson);
@@ -1933,7 +1933,7 @@ mod tests {
             let app_data = std::env::temp_dir();
             inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
             let globals = ctx.globals();
-            let probe_ctx: Object = globals.get("__quotracker_ctx").expect("probe ctx");
+            let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");
             let crypto: Object = host.get("crypto").expect("crypto");
             let _decrypt: Function = crypto.get("decryptAes256Gcm").expect("decryptAes256Gcm");
@@ -1950,7 +1950,7 @@ mod tests {
             let app_data = std::env::temp_dir();
             inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
             let js_expr = format!(
-                r#"__quotracker_ctx.host.crypto.decryptAes256Gcm("{}", "{}")"#,
+                r#"__openquotacycle_ctx.host.crypto.decryptAes256Gcm("{}", "{}")"#,
                 envelope, key_b64
             );
             let decrypted: String = ctx.eval(js_expr).expect("js decrypt");
@@ -1966,7 +1966,7 @@ mod tests {
             let app_data = std::env::temp_dir();
             inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
             let globals = ctx.globals();
-            let probe_ctx: Object = globals.get("__quotracker_ctx").expect("probe ctx");
+            let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");
             let keychain: Object = host.get("keychain").expect("keychain");
             let _read: Function = keychain
@@ -2031,7 +2031,7 @@ mod tests {
             let app_data = std::env::temp_dir();
             inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
             let globals = ctx.globals();
-            let probe_ctx: Object = globals.get("__quotracker_ctx").expect("probe ctx");
+            let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");
             let env: Object = host.get("env").expect("env");
             let get: Function = env.get("get").expect("get");
@@ -2042,7 +2042,7 @@ mod tests {
                     get.call((name.to_string(),)).expect("get whitelisted var");
                 assert_eq!(value, expected, "{name} should match host env resolver");
 
-                let js_expr = format!(r#"__quotracker_ctx.host.env.get("{}")"#, name);
+                let js_expr = format!(r#"__openquotacycle_ctx.host.env.get("{}")"#, name);
                 let js_value: Option<String> = ctx.eval(js_expr).expect("js get whitelisted var");
                 assert_eq!(
                     js_value, expected,
@@ -2051,7 +2051,7 @@ mod tests {
             }
 
             let blocked: Option<String> = get
-                .call(("__QUOTRACKER_TEST_NOT_WHITELISTED__".to_string(),))
+                .call(("__OPENQUOTACYCLE_TEST_NOT_WHITELISTED__".to_string(),))
                 .expect("get blocked var");
             assert!(
                 blocked.is_none(),
@@ -2059,7 +2059,7 @@ mod tests {
             );
 
             let js_blocked: Option<String> = ctx
-                .eval(r#"__quotracker_ctx.host.env.get("__QUOTRACKER_TEST_NOT_WHITELISTED__")"#)
+                .eval(r#"__openquotacycle_ctx.host.env.get("__OPENQUOTACYCLE_TEST_NOT_WHITELISTED__")"#)
                 .expect("js get blocked var");
             assert!(
                 js_blocked.is_none(),
@@ -2100,7 +2100,7 @@ mod tests {
             let app_data = std::env::temp_dir();
             inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
             let globals = ctx.globals();
-            let probe_ctx: Object = globals.get("__quotracker_ctx").expect("probe ctx");
+            let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");
             let env: Object = host.get("env").expect("env");
             let get: Function = env.get("get").expect("get");
@@ -2113,7 +2113,7 @@ mod tests {
             );
 
             let js_value: Option<String> = ctx
-                .eval(r#"__quotracker_ctx.host.env.get("ZAI_API_KEY")"#)
+                .eval(r#"__openquotacycle_ctx.host.env.get("ZAI_API_KEY")"#)
                 .expect("js get");
             assert_eq!(
                 js_value.as_deref(),
@@ -2179,8 +2179,8 @@ mod tests {
     #[test]
     fn current_keychain_account_prefers_explicit_user_value() {
         assert_eq!(
-            current_keychain_account_from_user_env(Some("quotracker-test-user".to_string())),
-            "quotracker-test-user"
+            current_keychain_account_from_user_env(Some("openquotacycle-test-user".to_string())),
+            "openquotacycle-test-user"
         );
     }
 

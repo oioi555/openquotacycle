@@ -1,3 +1,3 @@
 fn main() {
-    quotracker_lib::run()
+    openquotacycle_lib::run()
 }

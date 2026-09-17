@@ -5,7 +5,7 @@ use std::path::Path;
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Manager};
 
-const APP_NAME: &str = "Quotracker";
+const APP_NAME: &str = "OpenQuotaCycle";
 /// Freedesktop: 0 = do not expire until the user dismisses.
 const EXPIRE_TIMEOUT_MS: i32 = 0;
 
@@ -106,14 +106,14 @@ mod tests {
     fn missing_icon_is_empty_not_desktop_id() {
         assert_eq!(app_icon_arg(None), "");
         assert_eq!(
-            app_icon_arg(Some(Path::new("/no/such/quotracker-notify-icon.png"))),
+            app_icon_arg(Some(Path::new("/no/such/openquotacycle-notify-icon.png"))),
             ""
         );
     }
 
     #[test]
     fn existing_icon_file_is_passed_as_path() {
-        let path = std::env::temp_dir().join("quotracker-notify-icon-test.png");
+        let path = std::env::temp_dir().join("openquotacycle-notify-icon-test.png");
         std::fs::write(&path, b"png").expect("write temp icon");
         assert_eq!(app_icon_arg(Some(&path)), path.to_string_lossy());
         let _ = std::fs::remove_file(&path);

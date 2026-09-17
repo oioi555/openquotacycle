@@ -2,14 +2,14 @@
 
 ## Purpose
 
-Show OpenRouter key budget and period spending in Quotracker while keeping
+Show OpenRouter key budget and period spending in OpenQuotaCycle while keeping
 OpenRouter usage separate from the Grok SuperGrok subscription quota.
 
 ## Requirements
 
 ### Requirement: Read OpenRouter key accounting
 
-The system SHALL read an OpenRouter API key from the first usable source in this order: `~/.config/quotracker/openrouter.json` `apiKey`, then `OPENROUTER_API_KEY`, then the `openrouter` entry in OpenCode's `~/.local/share/opencode/auth.json`. It SHALL query the key accounting endpoint with that key. Missing credentials SHALL tell the user to set an API key, not only to configure OpenCode.
+The system SHALL read an OpenRouter API key from the first usable source in this order: `~/.config/openquotacycle/openrouter.json` `apiKey`, then `OPENROUTER_API_KEY`, then the `openrouter` entry in OpenCode's `~/.local/share/opencode/auth.json`. It SHALL query the key accounting endpoint with that key. Missing credentials SHALL tell the user to set an API key, not only to configure OpenCode.
 
 #### Scenario: Configured OpenRouter key
 
@@ -61,7 +61,7 @@ The system SHALL preserve the OpenRouter key's remaining budget and usage scope 
 #### Scenario: Limited key
 
 - **WHEN** the response contains a positive numeric limit and remaining amount
-- **THEN** the progress model uses `limit - remaining` as used and the default Quotracker `left` display shows the remaining amount
+- **THEN** the progress model uses `limit - remaining` as used and the default OpenQuotaCycle `left` display shows the remaining amount
 
 #### Scenario: Unlimited key
 

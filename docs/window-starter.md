@@ -55,7 +55,7 @@ Claude cannot be started through OpenCode, Hermes, or Pi (Anthropic forbids thir
 
 ## Commands
 
-Quotracker invokes each executable directly, no shell:
+OpenQuotaCycle invokes each executable directly, no shell:
 
 ```text
 claude -p <prompt> --model claude-haiku-4-5 --tools "" --max-turns 1 --no-session-persistence
@@ -79,15 +79,15 @@ Do not swap these pins:
 
 Safety flags: no `--auto` (OpenCode), no `--yolo` (Hermes), no `--api-key` (Pi), no `--dangerously-skip-permissions` (`agy`).
 
-The prompt is `Quotracker Window Starter request. Respond with only "OK".`. No credentials or account ids. Native spawn puts the prompt in argv. Copy button and log command use the same prompt, POSIX-quoted for paste.
+The prompt is `OpenQuotaCycle Window Starter request. Respond with only "OK".`. No credentials or account ids. Native spawn puts the prompt in argv. Copy button and log command use the same prompt, POSIX-quoted for paste.
 
 ## After a start
 
 - Auto-start tries a window at most once in five hours, including after a failed or unconfirmed attempt. The lock is `(plugin, window line)`, so Antigravity Session and Claude are independent. A confirmed Run now can still execute while the lock (or Auto-start off) would block auto-start; that attempt then holds the lock. After the CLI exits, another window can start while the first is still waiting for quota confirmation.
 - Only one CLI runs at a time.
 - The model request is never retried from a rounded usage percentage.
-- After one successful CLI, Quotracker refreshes only that provider's quota for up to two minutes.
+- After one successful CLI, OpenQuotaCycle refreshes only that provider's quota for up to two minutes.
 - A future 5-hour reset for that window confirms the attempt. Missing confirmation is `unconfirmed` with no second model request.
 - Quota probes and confirmation polls are not start logs.
 
-Window Starter cannot check the CLI account before the first request. Use the same subscription Quotracker shows. Z.ai must be Coding Plan, not a standard API balance. Codex purchased credits may be independent of the 5-hour allowance.
+Window Starter cannot check the CLI account before the first request. Use the same subscription OpenQuotaCycle shows. Z.ai must be Coding Plan, not a standard API balance. Codex purchased credits may be independent of the 5-hour allowance.

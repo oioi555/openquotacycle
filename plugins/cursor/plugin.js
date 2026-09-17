@@ -669,5 +669,5 @@
     return { plan: plan, lines: lines }
   }
 
-  globalThis.__quotracker_plugin = { id: "cursor", probe }
+  globalThis.__openquotacycle_plugin = { id: "cursor", probe }
 })()

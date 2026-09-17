@@ -1,6 +1,6 @@
 # How to Capture Logs
 
-Use this when Quotracker is not working and you need logs.
+Use this when OpenQuotaCycle is not working and you need logs.
 
 - Audience: anyone debugging a local install
 - Platform: Linux
@@ -17,12 +17,12 @@ There is no in-app Debug Level. Dev builds log at Trace. Release builds log at E
 ## 2) Open the log file
 
 ```text
-~/.local/share/io.github.oioi555.quotracker/logs/quotracker.log
+~/.local/share/io.github.oioi555.openquotacycle/logs/openquotacycle.log
 ```
 
-If `XDG_DATA_HOME` is set, logs are under `$XDG_DATA_HOME/io.github.oioi555.quotracker/logs/`.
+If `XDG_DATA_HOME` is set, logs are under `$XDG_DATA_HOME/io.github.oioi555.openquotacycle/logs/`.
 
-Rotated files look like `quotracker.log.1`.
+Rotated files look like `openquotacycle.log.1`.
 
 ## 3) What to send with the log
 
@@ -31,7 +31,7 @@ What I expected:
 What happened instead:
 When it happened (local time + timezone):
 Which provider was affected (Codex / Claude / Cursor / etc.):
-Quotracker version:
+OpenQuotaCycle version:
 ```
 
 Logs are redacted for common secrets. Review them before sharing.

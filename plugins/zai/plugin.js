@@ -218,5 +218,5 @@
     return { plan, lines, statuses: [peakStatus(ctx)] }
   }
 
-  globalThis.__quotracker_plugin = { id: "zai", probe }
+  globalThis.__openquotacycle_plugin = { id: "zai", probe }
 })()

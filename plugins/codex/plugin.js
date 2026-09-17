@@ -249,7 +249,7 @@
     const headers = {
       Authorization: "Bearer " + accessToken,
       Accept: "application/json",
-      "User-Agent": "Quotracker",
+      "User-Agent": "OpenQuotaCycle",
     }
     if (accountId) {
       headers["ChatGPT-Account-Id"] = accountId
@@ -551,5 +551,5 @@
     throw "Not logged in. Run `codex` to authenticate."
   }
 
-  globalThis.__quotracker_plugin = { id: "codex", probe }
+  globalThis.__openquotacycle_plugin = { id: "codex", probe }
 })()

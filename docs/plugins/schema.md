@@ -98,7 +98,7 @@ Validation rules:
 
 - `entry` must be relative (not absolute)
 - `entry` must exist within the plugin directory
-- `id` must match `globalThis.__quotracker_plugin.id`
+- `id` must match `globalThis.__openquotacycle_plugin.id`
 - `icon` must be relative and point to an SVG file (use `fill="currentColor"` for theme compatibility)
 - `links[].url` (if provided) must be an `http://` or `https://` URL
 
@@ -150,10 +150,11 @@ Example:
 
 ## Entry Point Structure
 
-Plugins must register themselves on the global object:
+Plugins must register themselves on the global object. The host injects APIs on
+`globalThis.__openquotacycle_ctx` and passes that same object to `probe(ctx)`.
 
 ```javascript
-globalThis.__quotracker_plugin = {
+globalThis.__openquotacycle_plugin = {
   id: "my-provider",  // Must match manifest.id
   probe: function(ctx) { ... }
 }
@@ -282,7 +283,7 @@ A complete, working plugin that fetches data and displays progress, text, and a 
 
 ```javascript
 (function () {
-  globalThis.__quotracker_plugin = {
+  globalThis.__openquotacycle_plugin = {
     id: "minimal",
     probe: function (ctx) {
       let resp

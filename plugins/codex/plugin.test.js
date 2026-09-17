@@ -4,7 +4,7 @@ import pluginManifest from "./plugin.json"
 
 const loadPlugin = async () => {
   await import("./plugin.js")
-  return globalThis.__quotracker_plugin
+  return globalThis.__openquotacycle_plugin
 }
 
 describe("codex plugin", () => {
@@ -18,7 +18,7 @@ describe("codex plugin", () => {
   })
 
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin
+    delete globalThis.__openquotacycle_plugin
     vi.resetModules()
   })
 
@@ -468,7 +468,7 @@ describe("codex plugin", () => {
         headers,
         bodyText: JSON.stringify(body),
       })
-      delete globalThis.__quotracker_plugin
+      delete globalThis.__openquotacycle_plugin
       vi.resetModules()
       const plugin = await loadPlugin()
       return plugin.probe(ctx)
@@ -976,7 +976,7 @@ describe("codex plugin", () => {
       headers: {},
       bodyText: JSON.stringify({ error: { code: "refresh_token_invalidated" } }),
     })
-    delete globalThis.__quotracker_plugin
+    delete globalThis.__openquotacycle_plugin
     vi.resetModules()
     plugin = await loadPlugin()
     expect(() => plugin.probe(ctx)).toThrow("Token revoked")
@@ -1001,7 +1001,7 @@ describe("codex plugin", () => {
         }
       })
 
-      delete globalThis.__quotracker_plugin
+      delete globalThis.__openquotacycle_plugin
       vi.resetModules()
       const plugin = await loadPlugin()
       const result = plugin.probe(ctx)
@@ -1214,7 +1214,7 @@ describe("codex plugin", () => {
       expect(session.periodDurationMs).toBe(18000000)
 
       // Duplicate five-hour windows: only one Session line (first emit-capable wins).
-      delete globalThis.__quotracker_plugin
+      delete globalThis.__openquotacycle_plugin
       vi.resetModules()
       plugin = await loadPlugin()
       ctx.host.http.request.mockReturnValueOnce({
@@ -1238,7 +1238,7 @@ describe("codex plugin", () => {
       expect(sessionLines[0].resetsAt).toBe(new Date((nowSec + 1000) * 1000).toISOString())
 
       // Fall through when primary Session lacks used value.
-      delete globalThis.__quotracker_plugin
+      delete globalThis.__openquotacycle_plugin
       vi.resetModules()
       plugin = await loadPlugin()
       ctx.host.http.request.mockReturnValueOnce({
@@ -1276,7 +1276,7 @@ describe("codex plugin", () => {
         headers: {},
         bodyText: JSON.stringify(body),
       })
-      delete globalThis.__quotracker_plugin
+      delete globalThis.__openquotacycle_plugin
       vi.resetModules()
       const plugin = await loadPlugin()
       return plugin.probe(ctx)
@@ -1342,7 +1342,7 @@ describe("codex plugin", () => {
       expect(result.lines.find((l) => l.label === "Session")).toBeUndefined()
       expect(result.lines.filter((l) => l.label === "Weekly")).toHaveLength(1)
 
-      delete globalThis.__quotracker_plugin
+      delete globalThis.__openquotacycle_plugin
       vi.resetModules()
       plugin = await loadPlugin()
       ctx.host.http.request.mockReturnValueOnce({

@@ -66,7 +66,7 @@ describe("settings page", () => {
   it("opens About from the version row", async () => {
     setup();
 
-    const row = screen.getByText("Quotracker").closest("button");
+    const row = screen.getByText("OpenQuotaCycle").closest("button");
     expect(row?.className).toContain("ui-nav-row");
     expect(screen.getByText("v0.0.2 · Changelog & credits")).toBeTruthy();
     expect(screen.queryByText("Help")).toBeNull();
@@ -82,7 +82,7 @@ describe("settings page", () => {
     expect(screen.queryByText("Glass half full or half empty")).toBeNull();
     expect(screen.queryByText("Countdown or clock time")).toBeNull();
     expect(screen.queryByText("How it looks around here")).toBeNull();
-    expect(screen.queryByText("Quotracker starts when you sign in")).toBeNull();
+    expect(screen.queryByText("OpenQuotaCycle starts when you sign in")).toBeNull();
     expect(screen.queryByText("Starts when you sign in.")).toBeNull();
     expect(screen.queryByText("5h 12m")).toBeNull();
     expect(screen.queryByRole("radio")).toBeNull();

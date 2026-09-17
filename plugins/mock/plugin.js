@@ -34,5 +34,5 @@
     }
   }
 
-  globalThis.__quotracker_plugin = { id: "mock", probe }
+  globalThis.__openquotacycle_plugin = { id: "mock", probe }
 })()

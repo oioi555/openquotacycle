@@ -1,10 +1,10 @@
 (function () {
   const PROVIDER_ID = "openrouter"
-  const CONFIG_PATH = "~/.config/quotracker/openrouter.json"
+  const CONFIG_PATH = "~/.config/openquotacycle/openrouter.json"
   const AUTH_PATH = "~/.local/share/opencode/auth.json"
   const KEY_URL = "https://openrouter.ai/api/v1/key"
   const CREDITS_URL = "https://openrouter.ai/api/v1/credits"
-  const USER_AGENT = "Quotracker"
+  const USER_AGENT = "OpenQuotaCycle"
 
   function readNumber(value) {
     if (value === null || value === undefined || value === "") return null
@@ -157,7 +157,7 @@
   function probe(ctx) {
     const apiKey = loadApiKey(ctx)
     if (!apiKey) {
-      throw "No OpenRouter API key. Set OPENROUTER_API_KEY or add it to ~/.config/quotracker/openrouter.json."
+      throw "No OpenRouter API key. Set OPENROUTER_API_KEY or add it to ~/.config/openquotacycle/openrouter.json."
     }
 
     const credits = loadEndpoint(ctx, apiKey, CREDITS_URL)
@@ -198,5 +198,5 @@
     throw "OpenRouter response invalid. Try again later."
   }
 
-  globalThis.__quotracker_plugin = { id: PROVIDER_ID, probe }
+  globalThis.__openquotacycle_plugin = { id: PROVIDER_ID, probe }
 })()

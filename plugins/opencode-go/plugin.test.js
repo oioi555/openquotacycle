@@ -8,7 +8,7 @@ const USAGE_URL = "https://opencode.ai/zen/go/v1/usage";
 
 const loadPlugin = async () => {
   await import("./plugin.js");
-  return globalThis.__quotracker_plugin;
+  return globalThis.__openquotacycle_plugin;
 };
 
 function setAuth(ctx, value = "go-key") {
@@ -49,7 +49,7 @@ async function probeAt(nowIso) {
 
 describe("opencode-go plugin", () => {
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin;
+    delete globalThis.__openquotacycle_plugin;
     vi.resetModules();
   });
 

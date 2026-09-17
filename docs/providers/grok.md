@@ -44,13 +44,13 @@ When `expires_at` (ISO datetime) is in the past, the plugin does **not**
 attempt a refresh. If `expires_at` is missing or unparsable and the key is a
 JWT, its `exp` claim is used as a fallback. In both cases the plugin shows a
 "Grok session expired. Start Grok Build and try again." error. Grok Build owns
-the reconnect/refresh flow; Quotracker can spawn `grok models` to trigger it
+the reconnect/refresh flow; OpenQuotaCycle can spawn `grok models` to trigger it
 (see Credential Wake).
 
 ## Credential Wake
 
 When the probe reports that credential error (in `error` or `staleError`),
-Quotracker can spawn the official `grok` CLI as a one-shot:
+OpenQuotaCycle can spawn the official `grok` CLI as a one-shot:
 
 ```text
 grok models
@@ -58,7 +58,7 @@ grok models
 
 This is quota-free (it lists models; it is not `grok -p` and does not start a
 coding session). Grok Build refreshes `~/.grok/auth.json` if the stored token is
-stale. Quotracker does **not** parse `models` stdout — that output can claim
+stale. OpenQuotaCycle does **not** parse `models` stdout — that output can claim
 the user is unauthenticated even when refresh succeeded. The following re-probe
 is the only auth truth.
 
@@ -73,7 +73,7 @@ then re-probes `grok` only.
 Network and 5xx stale callouts do **not** wake: those failures are not
 credential expiry, and spawning a CLI that needs the network is pointless.
 
-Quotracker never calls OAuth endpoints, never writes `~/.grok/auth.json`, and
+OpenQuotaCycle never calls OAuth endpoints, never writes `~/.grok/auth.json`, and
 never writes the OS keyring. `models` stdout is drained and discarded.
 
 This is not a Window Starter attempt and does not use `grok -p`.
@@ -88,7 +88,7 @@ This is not a Window Starter attempt and does not use `grok -p`.
 |---|---|
 | Authorization | `Bearer <key>` |
 | Accept | `application/json` |
-| User-Agent | `Quotracker` |
+| User-Agent | `OpenQuotaCycle` |
 | X-XAI-Token-Auth | `xai-grok-cli` (primary auth identifier) |
 | x-grok-client-surface | `grok-build` (compatibility) |
 | x-grok-client-version | `1.0.0` (compatibility) |
@@ -126,10 +126,10 @@ This is not a Window Starter attempt and does not use `grok -p`.
 
 ## Stale Snapshot Fallback
 
-Quotracker caches the last successful quota window locally so the provider stays
+OpenQuotaCycle caches the last successful quota window locally so the provider stays
 usable while Grok Build's Grok credential is expired or the API is unreachable.
 
-- **Location:** `{quotracker app_data_dir}/plugins_data/grok/quota-snapshot.json`
+- **Location:** `{openquotacycle app_data_dir}/plugins_data/grok/quota-snapshot.json`
 - **Stored:** only the weekly window display fields (`used`, `label`, `resetsAt`,
   `periodDurationMs`, `savedAt`). Access tokens, refresh tokens, and other
   secrets are **never** written to the snapshot. Monthly/daily windows are not snapshotted.
@@ -153,7 +153,7 @@ usable while Grok Build's Grok credential is expired or the API is unreachable.
 
 ## Notes
 
-- The auth file is Grok Build-owned. Quotracker reads `~/.grok/auth.json`
+- The auth file is Grok Build-owned. OpenQuotaCycle reads `~/.grok/auth.json`
   read-only and relies on Grok Build to refresh credentials, avoiding write
   races with Grok Build's own auth updates.
 - OpenRouter usage (even via `x-ai/*` models) is tracked by the separate

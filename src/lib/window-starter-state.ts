@@ -331,7 +331,7 @@ export function formatWindowStarterClock(value: string): string {
 export const WINDOW_STARTER_PROMPT_PLACEHOLDER = "<prompt>"
 
 export function createWindowStarterPrompt(): string {
-  return 'Quotracker Window Starter request. Respond with only "OK".'
+  return 'OpenQuotaCycle Window Starter request. Respond with only "OK".'
 }
 
 /** POSIX single-quote so the string can be pasted into a terminal. */

@@ -57,5 +57,5 @@ openspec/.cache/context.json
 # Local Arch package build artifacts
 aur/*
 !aur/PKGBUILD
-!aur/quotracker-bin/
-!aur/quotracker-bin/PKGBUILD
+!aur/openquotacycle-bin/
+!aur/openquotacycle-bin/PKGBUILD

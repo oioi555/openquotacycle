@@ -8,7 +8,7 @@ use std::sync::{Mutex, OnceLock};
 use tauri::AppHandle;
 
 const SHORTCUT_ID: &str = "toggle-panel";
-const SHORTCUT_DESCRIPTION: &str = "Show Quotracker window";
+const SHORTCUT_DESCRIPTION: &str = "Show OpenQuotaCycle window";
 
 struct PortalState {
     command_tx: tokio::sync::mpsc::UnboundedSender<Option<String>>,

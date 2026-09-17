@@ -4,14 +4,14 @@ import pluginManifest from "./plugin.json"
 
 const loadPlugin = async () => {
   await import("./plugin.js")
-  return globalThis.__quotracker_plugin
+  return globalThis.__openquotacycle_plugin
 }
 
 const createCtx = (overrides) => makePluginTestContext(overrides, vi)
 
 describe("mock plugin", () => {
   beforeEach(() => {
-    delete globalThis.__quotracker_plugin
+    delete globalThis.__openquotacycle_plugin
     if (vi.resetModules) vi.resetModules()
     vi.useFakeTimers()
     vi.setSystemTime(new Date("2026-02-02T00:00:00.000Z"))

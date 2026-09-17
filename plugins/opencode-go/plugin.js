@@ -278,5 +278,5 @@
     return { plan: "Go", lines: lines, statuses: [deepSeekPeakStatus(ctx)] };
   }
 
-  globalThis.__quotracker_plugin = { id: PROVIDER_ID, probe: probe };
+  globalThis.__openquotacycle_plugin = { id: PROVIDER_ID, probe: probe };
 })();

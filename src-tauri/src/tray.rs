@@ -20,7 +20,7 @@ pub(crate) fn rgba_to_argb(mut data: Vec<u8>) -> Vec<u8> {
 
 pub(crate) fn tooltip_from_text(text: &str) -> ToolTip {
     let mut lines = text.lines();
-    let title = lines.next().unwrap_or("Quotracker").to_string();
+    let title = lines.next().unwrap_or("OpenQuotaCycle").to_string();
     let description = lines.collect::<Vec<_>>().join("\n");
     ToolTip {
         icon_name: String::new(),
@@ -79,11 +79,11 @@ impl Tray for QuoTray {
     const MENU_ON_ACTIVATE: bool = false;
 
     fn id(&self) -> String {
-        "quotracker".into()
+        "openquotacycle".into()
     }
 
     fn title(&self) -> String {
-        "Quotracker".into()
+        "OpenQuotaCycle".into()
     }
 
     fn icon_pixmap(&self) -> Vec<Icon> {
@@ -117,7 +117,7 @@ impl Tray for QuoTray {
                 tray.navigate("settings");
             }),
             MenuItem::Separator,
-            Self::item("About Quotracker", |tray| {
+            Self::item("About OpenQuotaCycle", |tray| {
                 log::info!("tray menu: about clicked");
                 tray.show_window();
                 let _ = tray.app.emit("tray:show-about", ());
@@ -146,7 +146,7 @@ pub fn create(app_handle: &AppHandle) -> tauri::Result<()> {
     let tray = QuoTray {
         app: app_handle.clone(),
         icon,
-        tooltip: "Quotracker".into(),
+        tooltip: "OpenQuotaCycle".into(),
         activation_token: None,
     };
     let handle = tray
@@ -194,8 +194,8 @@ mod tests {
 
     #[test]
     fn tooltip_splits_first_line_as_title() {
-        let tip = tooltip_from_text("Quotracker\nClaude: 12%\nCodex: --%");
-        assert_eq!(tip.title, "Quotracker");
+        let tip = tooltip_from_text("OpenQuotaCycle\nClaude: 12%\nCodex: --%");
+        assert_eq!(tip.title, "OpenQuotaCycle");
         assert_eq!(tip.description, "Claude: 12%\nCodex: --%");
     }
 }

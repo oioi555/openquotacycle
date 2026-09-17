@@ -345,7 +345,7 @@ describe("formatWindowStarterClock", () => {
 describe("createWindowStarterPrompt", () => {
   it("asks for only OK in a fixed English sentence", () => {
     expect(createWindowStarterPrompt()).toBe(
-      'Quotracker Window Starter request. Respond with only "OK".',
+      'OpenQuotaCycle Window Starter request. Respond with only "OK".',
     )
   })
 })

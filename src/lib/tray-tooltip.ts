@@ -71,7 +71,7 @@ export function buildTrayTooltipEntries(args: {
  * Lists the app name followed by enabled plugins and their usage percentages.
  */
 export function formatTrayTooltip(entries: TrayTooltipEntry[]): string {
-  const lines = ["Quotracker"]
+  const lines = ["OpenQuotaCycle"]
   for (const entry of entries) {
     lines.push(`${entry.name}: ${entry.percentText}`)
   }

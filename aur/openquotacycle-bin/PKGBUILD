@@ -1,19 +1,20 @@
 # Maintainer: oioi555 <oioi555x@gmail.com>
 # AUR package: unpacks the GitHub Release .deb.
-# Local source builds use ../PKGBUILD (quotracker-git), not this file.
+# Local source builds use ../PKGBUILD (openquotacycle-git), not this file.
 
-pkgname=quotracker-bin
+pkgname=openquotacycle-bin
 pkgver=0.1.0
 pkgrel=1
 pkgdesc="Linux desktop app for planning AI coding quotas around the 5-hour window"
 arch=('x86_64')
-url="https://github.com/oioi555/quotracker"
+url="https://github.com/oioi555/openquotacycle"
 license=('MIT')
-provides=('quotracker')
-conflicts=('quotracker')
+provides=('openquotacycle')
+conflicts=('openquotacycle' 'quotracker' 'quotracker-bin' 'quotracker-git')
+replaces=('quotracker' 'quotracker-bin' 'quotracker-git')
 depends=('webkit2gtk-4.1' 'gtk3')
 options=('!strip' '!debug')
-source=("https://github.com/oioi555/quotracker/releases/download/v${pkgver}/quotracker_${pkgver}_amd64.deb")
+source=("https://github.com/oioi555/openquotacycle/releases/download/v${pkgver}/openquotacycle_${pkgver}_amd64.deb")
 sha256sums=('0000000000000000000000000000000000000000000000000000000000000000')
 noextract=("${source[0]##*/}")
 

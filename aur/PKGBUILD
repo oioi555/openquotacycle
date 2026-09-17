@@ -1,16 +1,17 @@
 # Maintainer: oioi555
-# Local-only makepkg recipe (quotracker-git). AUR publication is
-# aur/quotracker-bin (GitHub Release .deb), not this file.
+# Local-only makepkg recipe (openquotacycle-git). AUR publication is
+# aur/openquotacycle-bin (GitHub Release .deb), not this file.
 
-pkgname=quotracker-git
+pkgname=openquotacycle-git
 pkgver=0.0.2.r44.g1034dee
 pkgrel=1
 pkgdesc="Linux desktop app for planning AI coding quotas around the 5-hour window"
 arch=('x86_64')
-url="https://github.com/oioi555/quotracker"
+url="https://github.com/oioi555/openquotacycle"
 license=('MIT')
-provides=("quotracker")
-conflicts=("quotracker")
+provides=("openquotacycle")
+conflicts=("openquotacycle" "quotracker" "quotracker-bin" "quotracker-git")
+replaces=("quotracker" "quotracker-bin" "quotracker-git")
 # Runtime: WebKitGTK window. Secret Service is D-Bus via oo7 (no libsecret /
 # secret-tool). Tray is ksni (no ayatana / appmenu-gtk-module).
 depends=('webkit2gtk-4.1' 'gtk3')

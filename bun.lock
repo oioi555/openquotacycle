@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "quotracker",
+      "name": "openquotacycle",
       "dependencies": {
         "@lucide/svelte": "^1.41.0",
         "@tailwindcss/vite": "^4.3.3",
