@@ -98,7 +98,7 @@ Each Claude Code login lives in its own config directory (`CLAUDE_CONFIG_DIR`). 
 2. Every `~/.claude-*` directory that contains `.credentials.json` (name order).
 3. Every directory in `claude.accountDirs` of `~/.config/openquotacycle/config.json` (`~` expanded) that contains `.credentials.json`.
 
-Each extra directory becomes its own Claude card: id `claude@` + first 8 chars of `oauthAccount.accountUuid` from `<dir>/.claude.json`, or `claude@<dir name without leading .>` when that is missing. The primary reads `~/.claude.json` (or `<dir>/.claude.json` when `CLAUDE_CONFIG_DIR` is set). Same `accountUuid` in two directories → only the first is kept. The primary card stays `Claude`. Extra cards are named from the directory: `~/.claude-sub` → `Claude · sub`; a directory outside the convention uses its base name (`/srv/claude/acc1` → `Claude · acc1`). With more than one account, hovering a card title shows that account's full email (`oauthAccount.emailAddress`).
+Each extra directory becomes its own Claude card: id `claude@` + first 8 chars of `oauthAccount.accountUuid` from `<dir>/.claude.json`, or `claude@<dir name without leading .>` when that is missing. The primary reads `~/.claude.json` (or `<dir>/.claude.json` when `CLAUDE_CONFIG_DIR` is set). Same `accountUuid` in two extra directories → only the first is kept. When the primary holds the same account as an extra directory, the primary `Claude` card is omitted and the extra directory's card stays. The primary card stays `Claude`. Extra cards are named from the directory: `~/.claude-sub` → `Claude · sub`; a directory outside the convention uses its base name (`/srv/claude/acc1` → `Claude · acc1`). With more than one account, hovering a card title shows that account's full email (`oauthAccount.emailAddress`).
 
 Each card has its own order, enable state, Customize, Window Starter participation, history, lock, leftover notify, and local HTTP API snapshot. New cards are enabled by default. Probes read, refresh, and write back tokens only inside that card's directory.
 
@@ -120,6 +120,7 @@ Directories outside the `~/.claude-*` convention (e.g. managed by an account swi
 
 - Log in separately on each machine. Never copy `.credentials.json` between machines — refresh-token rotation can then log one side out.
 - Restart OpenQuotaCycle after a new login or config change.
+- Account switchers (e.g. Orca) swap the login inside `~/.claude`. Give every account its own dedicated directory (`~/.claude-a`, `~/.claude-b`, …) and log in there separately. The primary then always duplicates one of them, so it never shows a card, and each account keeps one stable card and Window Starter no matter which account is active in `~/.claude`.
 - Linux file-based credentials only; macOS keychain logins for extra directories are not detected.
 
 ### Token Refresh

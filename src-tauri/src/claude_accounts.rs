@@ -104,7 +104,8 @@ pub fn discover_accounts(
         primary: true,
     }];
     let mut seen_dirs: HashSet<PathBuf> = HashSet::from([canonical(&primary_dir)]);
-    let mut seen_uuids: HashSet<String> = primary_identity.uuid.into_iter().collect();
+    // Dedicated dirs dedupe among themselves; the primary yields to them (see below).
+    let mut seen_uuids: HashSet<String> = HashSet::new();
     let mut seen_ids: HashSet<String> = HashSet::from([CLAUDE_BASE_ID.to_string()]);
 
     let candidates = scan_suffixed_dirs(home)
@@ -120,7 +121,7 @@ pub fn discover_accounts(
         }
         let identity = read_identity(&dir.join(".claude.json"));
         if let Some(uuid) = &identity.uuid
-            && !seen_uuids.insert(uuid.clone())
+            && seen_uuids.contains(uuid)
         {
             log::info!(
                 "[claude-accounts] {} duplicates an earlier account; skipped",
@@ -141,6 +142,10 @@ pub fn discover_accounts(
             );
             continue;
         }
+        // Record only adopted uuids: a skipped dir must not hide the primary below.
+        if let Some(uuid) = &identity.uuid {
+            seen_uuids.insert(uuid.clone());
+        }
         accounts.push(ClaudeAccount {
             id,
             label: dir_label(&dir),
@@ -149,11 +154,20 @@ pub fn discover_accounts(
             primary: false,
         });
     }
+    // Account switchers (e.g. Orca) swap the login in the primary dir, so a dedicated
+    // dir for the same account is the stable card; drop the duplicate primary.
+    if let Some(uuid) = &primary_identity.uuid
+        && seen_uuids.contains(uuid)
+    {
+        log::info!("[claude-accounts] primary duplicates a dedicated dir; omitted");
+        accounts.retain(|a| !a.primary);
+    }
     accounts
 }
 
 /// Adds one cloned `claude` plugin per non-primary account (right after `claude`).
 /// Primary keeps its name; instances are `<name> · <label>`. All get the email tooltip.
+/// Removes `claude` itself when the primary was omitted as a duplicate.
 pub fn apply_accounts(plugins: &mut Vec<LoadedPlugin>, accounts: &[ClaudeAccount]) {
     let Some(index) = plugins.iter().position(|p| p.manifest.id == CLAUDE_BASE_ID) else {
         return;
@@ -179,6 +193,9 @@ pub fn apply_accounts(plugins: &mut Vec<LoadedPlugin>, accounts: &[ClaudeAccount
         )];
         plugins.insert(insert_at, instance);
         insert_at += 1;
+    }
+    if !accounts.iter().any(|a| a.primary) {
+        plugins.remove(index);
     }
 }
 

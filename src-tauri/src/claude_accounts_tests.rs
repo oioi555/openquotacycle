@@ -102,7 +102,7 @@ fn missing_or_malformed_account_file_falls_back_to_dir_name() {
 }
 
 #[test]
-fn duplicate_uuid_keeps_first() {
+fn primary_yields_to_dedicated_dir_with_same_uuid() {
     let home = temp_home("dedupe");
     login(&home.join(".claude"), None);
     write_account(&home.join(".claude.json"), "1234abcd-5678", "a@example.com");
@@ -116,7 +116,51 @@ fn duplicate_uuid_keeps_first() {
     );
     let extra = home.join(".claude-c");
     let accounts = discover_accounts(&home, None, &[extra]);
-    assert_eq!(ids(&accounts), vec!["claude", "claude@9999eeee"]);
+    assert_eq!(ids(&accounts), vec!["claude@1234abcd", "claude@9999eeee"]);
+}
+
+#[test]
+fn switcher_primary_is_omitted_and_dedicated_dirs_stay() {
+    let home = temp_home("switcher");
+    login(&home.join(".claude"), None);
+    write_account(&home.join(".claude.json"), "bbbb0000-1", "b@example.com");
+    login(&home.join(".claude-a"), Some(("aaaa0000-1", "a@example.com")));
+    login(&home.join(".claude-b"), Some(("bbbb0000-1", "b@example.com")));
+    let accounts = discover_accounts(&home, None, &[]);
+    assert_eq!(ids(&accounts), vec!["claude@aaaa0000", "claude@bbbb0000"]);
+    assert!(accounts.iter().all(|a| !a.primary));
+}
+
+#[test]
+fn dedicated_dirs_sharing_uuid_keep_first() {
+    let home = temp_home("dedicated-dupe");
+    login(&home.join(".claude-b"), Some(("1234abcd-5678", "x@example.com")));
+    login(&home.join(".claude-c"), Some(("1234abcd-5678", "x@example.com")));
+    let accounts = discover_accounts(&home, None, &[]);
+    assert_eq!(ids(&accounts), vec!["claude", "claude@1234abcd"]);
+    assert_eq!(accounts[1].dir, home.join(".claude-b"));
+}
+
+#[test]
+fn id_collision_skip_does_not_hide_primary() {
+    let home = temp_home("id-collision");
+    login(&home.join(".claude"), None);
+    write_account(&home.join(".claude.json"), "1234abcd-2222", "p@example.com");
+    // Different accounts whose uuids share the first 8 chars → same instance id.
+    login(&home.join(".claude-b"), Some(("1234abcd-1111", "b@example.com")));
+    login(&home.join(".claude-c"), Some(("1234abcd-2222", "p@example.com")));
+    let accounts = discover_accounts(&home, None, &[]);
+    assert_eq!(ids(&accounts), vec!["claude", "claude@1234abcd"]);
+    assert_eq!(accounts[1].dir, home.join(".claude-b"));
+}
+
+#[test]
+fn primary_without_uuid_is_kept() {
+    let home = temp_home("primary-no-uuid");
+    login(&home.join(".claude"), None);
+    login(&home.join(".claude-b"), Some(("1234abcd-5678", "x@example.com")));
+    let accounts = discover_accounts(&home, None, &[]);
+    assert_eq!(ids(&accounts), vec!["claude", "claude@1234abcd"]);
 }
 
 #[test]
@@ -192,4 +236,21 @@ fn apply_instances_labels_and_env() {
             home.join(".claude-b").to_string_lossy().to_string()
         )]
     );
+}
+
+#[test]
+fn apply_without_primary_removes_claude_in_place() {
+    let mut other = claude_plugin();
+    other.manifest.id = "codex".to_string();
+    other.base_id = "codex".to_string();
+    let mut plugins = vec![claude_plugin(), other];
+    let home = temp_home("apply-no-primary");
+    login(&home.join(".claude"), None);
+    write_account(&home.join(".claude.json"), "bbbb0000-1", "b@example.com");
+    login(&home.join(".claude-a"), Some(("aaaa0000-1", "a@example.com")));
+    login(&home.join(".claude-b"), Some(("bbbb0000-1", "b@example.com")));
+    apply_accounts(&mut plugins, &discover_accounts(&home, None, &[]));
+    let ids: Vec<&str> = plugins.iter().map(|p| p.manifest.id.as_str()).collect();
+    assert_eq!(ids, vec!["claude@aaaa0000", "claude@bbbb0000", "codex"]);
+    assert_eq!(plugins[0].manifest.name, "Claude · a");
 }
