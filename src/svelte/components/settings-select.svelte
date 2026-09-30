@@ -24,7 +24,7 @@
 <DropdownMenu>
   <DropdownMenuTrigger
     aria-label={ariaLabel}
-    class="ui-pressable h-8 max-w-[11rem] shrink-0 justify-between gap-1.5 rounded-md border border-input bg-background px-2.5 text-sm font-normal text-foreground"
+    class="ui-pressable h-8 max-w-44 shrink-0 justify-between gap-1.5 rounded-md border border-input bg-background px-2.5 text-sm font-normal text-foreground"
   >
     <span class="truncate">{currentLabel}</span>
     <ChevronDown class="size-3.5 shrink-0 text-muted-foreground" />

@@ -88,7 +88,7 @@
     <div
       data-slot="timeline-lane"
       aria-hidden="true"
-      class="pointer-events-none absolute inset-x-0 top-1/2 h-[4px] -translate-y-1/2 rounded-full bg-meter-track"
+      class="pointer-events-none absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-meter-track"
     ></div>
     {#if resets.length > 0}
       {#each resets as r, index (r.ms)}

@@ -307,7 +307,7 @@ describe("metric-line-progress crossing-go tick", () => {
     expect(marker?.className).toContain("bg-meter-fill");
     expect(marker?.className).not.toContain("meter-go-tick");
     expect(marker?.className).not.toContain("shadow-");
-    expect(marker?.className).toContain("h-[16px]");
+    expect(marker?.className.split(/\s+/)).toContain("h-4");
   });
 
   it("keeps a muted tick when the 5-hour line is not crossing-go", () => {

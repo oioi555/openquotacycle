@@ -201,6 +201,38 @@ describe("classifyWindowStarterProviders", () => {
     expect(classifyClaude(pluginState([progress()]), { attempts: [attempt] }).status).toBe("locked")
   })
 
+  it("keeps Claude account instances independent (lock, card, base id)", () => {
+    const instance: PluginMeta = {
+      ...meta("claude@1234abcd", "Claude · b", CLAUDE_STARTER),
+      basePluginId: "claude",
+      claudeConfigDir: "/home/u/.claude-b",
+    }
+    const attempt: WindowStarterAttempt = {
+      id: "attempt",
+      providerId: "claude",
+      windowLine: "Session",
+      startedAt: new Date(NOW - 60 * 60_000).toISOString(),
+      status: "success",
+    }
+    const views = classifyWindowStarterProviders({
+      pluginSettings: { order: ["claude", "claude@1234abcd"], disabled: [] },
+      pluginMetas: [meta("claude", "Claude · a", CLAUDE_STARTER), instance],
+      pluginStates: {
+        claude: pluginState([progress()]),
+        "claude@1234abcd": pluginState([progress()]),
+      },
+      cliStatuses: { claude: { id: "claude", executable: "claude", available: true } },
+      attempts: [attempt],
+      runningKey: null,
+      nowMs: NOW,
+    })
+    expect(views.map((view) => [view.pluginId, view.status])).toEqual([
+      ["claude", "locked"],
+      ["claude@1234abcd", "ready"],
+    ])
+    expect(views[1]).toMatchObject({ basePluginId: "claude", claudeConfigDir: "/home/u/.claude-b" })
+  })
+
   it("omits OpenCode Go when the capability is absent", () => {
     const views = classifyWindowStarterProviders({
       pluginSettings: settings,
@@ -351,6 +383,17 @@ describe("createWindowStarterPrompt", () => {
 })
 
 describe("getWindowStarterCommand", () => {
+  it("prefixes CLAUDE_CONFIG_DIR for Claude account instances only", () => {
+    const plain = getWindowStarterCommand("claude", "claude", "session")
+    expect(plain.startsWith("claude -p")).toBe(true)
+    expect(getWindowStarterCommand("claude", "claude", "session", "<prompt>", "/home/u/.claude-b")).toBe(
+      `CLAUDE_CONFIG_DIR='/home/u/.claude-b' ${plain}`,
+    )
+    expect(getWindowStarterCommand("claude", "claude", "session", "<prompt>", "/tmp/it's")).toContain(
+      "CLAUDE_CONFIG_DIR='/tmp/it'\\''s' claude -p",
+    )
+  })
+
   it("mirrors the native pin table", () => {
     expect(getWindowStarterCommand("claude", "claude", "session")).toContain("claude-haiku-4-5")
     expect(getWindowStarterCommand("zai", "zcode", "session")).toBe(

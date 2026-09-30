@@ -1,5 +1,5 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
-import type { PluginMeta, WindowStarterCapability } from "@/lib/plugin-types";
+import { pluginBaseId, type PluginMeta, type WindowStarterCapability } from "@/lib/plugin-types";
 
 // Refresh cooldown duration in milliseconds (5 minutes)
 export const REFRESH_COOLDOWN_MS = 300_000;
@@ -407,6 +407,7 @@ export function normalizePluginSettings(
   plugins: PluginMeta[]
 ): PluginSettings {
   const knownIds = plugins.map((plugin) => plugin.id);
+  const baseIdById = new Map(plugins.map((plugin) => [plugin.id, pluginBaseId(plugin)]));
   const knownSet = new Set(knownIds);
 
   const order: string[] = [];
@@ -427,7 +428,7 @@ export function normalizePluginSettings(
 
   const disabled = settings.disabled.filter((id) => knownSet.has(id));
   for (const id of newlyAdded) {
-    if (!DEFAULT_ENABLED_PLUGINS.has(id) && !disabled.includes(id)) {
+    if (!DEFAULT_ENABLED_PLUGINS.has(baseIdById.get(id) ?? id) && !disabled.includes(id)) {
       disabled.push(id);
     }
   }

@@ -133,7 +133,7 @@
       </TooltipTrigger>
       <TooltipContent
         side="bottom"
-        class={isLater ? "max-w-[220px] text-center leading-snug" : "w-[200px] max-w-[220px] text-left leading-snug"}
+        class={isLater ? "max-w-55 text-center leading-snug" : "w-50 max-w-55 text-left leading-snug"}
       >
         {#if isLater}
           <span class="block">{titleLine}</span>

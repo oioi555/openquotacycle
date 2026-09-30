@@ -183,7 +183,8 @@ pub(super) fn enabled_snapshots_ordered(state: &CacheState) -> Vec<CachedPluginS
         if has_settings {
             !disabled.contains(id)
         } else {
-            default_enabled.contains(id)
+            // Claude account instances (`claude@<key>`) follow their base id.
+            default_enabled.contains(id.split('@').next().unwrap_or(id))
         }
     };
 
@@ -337,5 +338,38 @@ mod tests {
         let deserialized: CachedPluginSnapshot = serde_json::from_str(&json).unwrap();
         assert_eq!(deserialized.provider_id, "claude");
         assert_eq!(deserialized.lines.len(), 1);
+    }
+
+    #[test]
+    fn claude_account_instance_enabled_by_default_without_settings() {
+        let dir = std::env::temp_dir().join(format!(
+            "openquotacycle-test-claude-instance-{}",
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        let mut snapshots = HashMap::new();
+        for (id, name) in [
+            ("claude", "Claude"),
+            ("claude@1234abcd", "Claude · b"),
+            ("zai", "Z"),
+        ] {
+            snapshots.insert(id.to_string(), make_snapshot(id, name));
+        }
+        let state = CacheState {
+            snapshots,
+            app_data_dir: dir,
+            known_plugin_ids: vec![
+                "claude".to_string(),
+                "claude@1234abcd".to_string(),
+                "zai".to_string(),
+            ],
+        };
+        let ids: Vec<String> = enabled_snapshots_ordered(&state)
+            .into_iter()
+            .map(|s| s.provider_id)
+            .collect();
+        assert_eq!(ids, vec!["claude", "claude@1234abcd"]);
     }
 }

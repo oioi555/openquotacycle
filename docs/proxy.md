@@ -31,6 +31,8 @@ You can also use an authenticated proxy URL:
 }
 ```
 
+The same file also holds `claude.accountDirs` (extra Claude Code config directories). See [Claude multiple accounts](providers/claude.md#multiple-accounts).
+
 ## Behavior
 
 - Config is loaded once when the app starts.

@@ -209,10 +209,11 @@ class WindowStarterRunner {
       status: "pending",
       prompt,
       command: getWindowStarterCommand(
-        view.pluginId,
+        view.basePluginId,
         view.runnerId,
         view.windowId,
         prompt,
+        view.claudeConfigDir,
       ),
     };
 

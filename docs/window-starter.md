@@ -16,7 +16,7 @@ Per-provider reset and Reset All Customization restore participation, runner, an
 
 ## Cards
 
-Targets are grouped like Overview: one card per provider, in provider list order (declared windows stay in plugin order). Antigravity is one card with Session and Claude status rows.
+Targets are grouped like Overview: one card per provider, in provider list order (declared windows stay in plugin order). Antigravity is one card with Session and Claude status rows. Each discovered Claude account (`claude@<key>`, see [Claude multiple accounts](providers/claude.md#multiple-accounts)) is its own card with its own lock and log.
 
 Collapsed: window line and badge. If that window has an attempt, the row also shows the newest outcome icon and local `M/D HH:mm` — not the runner name.
 
@@ -51,7 +51,7 @@ The host owns executables and argv. The UI sends plugin id, runner id, window li
 | Z.ai | zcode, OpenCode, Hermes, Pi | `zcode` |
 | Antigravity | `agy` only | `agy` |
 
-Claude cannot be started through OpenCode, Hermes, or Pi (Anthropic forbids third-party clients). Z.ai cannot be started through Claude Code.
+Claude cannot be started through OpenCode, Hermes, or Pi (Anthropic forbids third-party clients). Claude account instances use the same `claude` pin; the host sets `CLAUDE_CONFIG_DIR` to that account's directory when spawning (the UI never sends a directory or env). The copied Customize command shows it as a `CLAUDE_CONFIG_DIR='<dir>' ` prefix. Z.ai cannot be started through Claude Code.
 
 ## Commands
 

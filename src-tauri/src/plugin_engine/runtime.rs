@@ -84,7 +84,15 @@ pub fn run_probe(plugin: &LoadedPlugin, app_data_dir: &PathBuf, app_version: &st
     let app_data = app_data_dir.clone();
 
     ctx.with(|ctx| {
-        if host_api::inject_host_api(&ctx, &plugin_id, &app_data, app_version).is_err() {
+        if host_api::inject_host_api(
+            &ctx,
+            &plugin_id,
+            &app_data,
+            app_version,
+            &plugin.env_overrides,
+        )
+        .is_err()
+        {
             return error_output(plugin, "host api injection failed".to_string());
         }
         if host_api::patch_http_wrapper(&ctx).is_err() {
@@ -532,6 +540,9 @@ mod tests {
                 window_starter_raw: None,
             },
             window_starter: None,
+            base_id: "test".to_string(),
+            env_overrides: vec![],
+            account_email: None,
             plugin_dir: PathBuf::from("."),
             entry_script: entry_script.to_string(),
             icon_data_url: "data:image/svg+xml;base64,".to_string(),

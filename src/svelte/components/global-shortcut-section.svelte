@@ -123,7 +123,7 @@
       onkeyup={handleKeyUp}
       onblur={stopRecording}
       class={cn(
-        "inline-flex h-8 max-w-[11rem] min-w-0 shrink-0 items-center rounded-md border-2 border-primary bg-muted/50 px-2.5 text-sm outline-none",
+        "inline-flex h-8 max-w-44 min-w-0 shrink-0 items-center rounded-md border-2 border-primary bg-muted/50 px-2.5 text-sm outline-none",
         !pendingDisplay && "text-muted-foreground",
       )}
     >
@@ -132,7 +132,7 @@
   {:else}
     <div
       class={cn(
-        "ui-pressable inline-flex h-8 max-w-[11rem] min-w-0 shrink-0 cursor-pointer items-center gap-1.5 rounded-md border border-input bg-background px-2.5 text-left text-sm",
+        "ui-pressable inline-flex h-8 max-w-44 min-w-0 shrink-0 cursor-pointer items-center gap-1.5 rounded-md border border-input bg-background px-2.5 text-left text-sm",
         !hasShortcut && "text-muted-foreground",
       )}
       onclick={startRecording}

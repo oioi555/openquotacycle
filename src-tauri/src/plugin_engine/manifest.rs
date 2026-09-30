@@ -65,6 +65,12 @@ pub struct LoadedPlugin {
     pub entry_script: String,
     pub icon_data_url: String,
     pub window_starter: Option<WindowStarterCapability>,
+    /// Plugin id this instance was derived from; equals `manifest.id` for normal plugins.
+    pub base_id: String,
+    /// Host-controlled env values that win over the whitelist lookup (probe + Window Starter).
+    pub env_overrides: Vec<(String, String)>,
+    /// Claude account email for the card title tooltip (multi-account only).
+    pub account_email: Option<String>,
 }
 
 pub fn load_plugins_from_dir(plugins_dir: &std::path::Path) -> Vec<LoadedPlugin> {
@@ -144,6 +150,9 @@ fn load_single_plugin(
     let icon_data_url = format!("data:image/svg+xml;base64,{}", STANDARD.encode(&icon_bytes));
 
     Ok(LoadedPlugin {
+        base_id: manifest.id.clone(),
+        env_overrides: Vec::new(),
+        account_email: None,
         manifest,
         plugin_dir: plugin_dir.to_path_buf(),
         entry_script,

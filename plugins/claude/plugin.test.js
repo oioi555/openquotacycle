@@ -700,6 +700,47 @@ describe("claude plugin", () => {
     expect(ctx.host.fs.writeText).toHaveBeenCalled()
   })
 
+  it("writes refreshed credentials only into CLAUDE_CONFIG_DIR (account instance)", async () => {
+    const ctx = makeCtx()
+    const configDir = "/x/.claude-b"
+    const credFile = configDir + "/.credentials.json"
+    ctx.host.env.get.mockImplementation((name) => (name === "CLAUDE_CONFIG_DIR" ? configDir : null))
+    ctx.host.fs.exists = vi.fn((path) => path === credFile)
+    ctx.host.fs.readText = vi.fn((path) => {
+      if (path !== credFile) throw new Error("unexpected readText path: " + path)
+      return JSON.stringify({
+        claudeAiOauth: {
+          accessToken: "old-token",
+          refreshToken: "refresh",
+          expiresAt: Date.now() - 1000,
+          subscriptionType: "pro",
+        },
+      })
+    })
+    ctx.host.http.request.mockImplementation((opts) => {
+      if (String(opts.url).includes("/v1/oauth/token")) {
+        return {
+          status: 200,
+          bodyText: JSON.stringify({ access_token: "new-token", expires_in: 3600, refresh_token: "refresh2" }),
+        }
+      }
+      return {
+        status: 200,
+        bodyText: JSON.stringify({
+          five_hour: { utilization: 10, resets_at: "2099-01-01T00:00:00.000Z" },
+        }),
+      }
+    })
+
+    const plugin = await loadPlugin()
+    plugin.probe(ctx)
+    expect(ctx.host.fs.writeText).toHaveBeenCalled()
+    for (const call of ctx.host.fs.writeText.mock.calls) {
+      expect(call[0]).toBe(credFile)
+    }
+    expect(ctx.host.keychain.writeGenericPassword).not.toHaveBeenCalled()
+  })
+
   it("includes user:file_upload in the OAuth refresh scope", async () => {
     const ctx = makeCtx()
     ctx.host.fs.exists = () => true

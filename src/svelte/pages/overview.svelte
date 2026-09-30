@@ -120,6 +120,7 @@
     {#each plugins as plugin (plugin.meta.id)}
       <ProviderCard
         name={plugin.meta.name}
+        nameTooltip={plugin.meta.accountEmail}
         plan={plugin.data?.plan}
         iconUrl={plugin.meta.iconUrl}
         brandColor={plugin.meta.brandColor}

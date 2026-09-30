@@ -1,3 +1,4 @@
+mod claude_accounts;
 mod config;
 mod credential_wake;
 mod legacy_migration;
@@ -61,6 +62,11 @@ pub struct PluginMeta {
     pub links: Vec<PluginLinkDto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub window_starter: Option<WindowStarterCapability>,
+    pub base_plugin_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub claude_config_dir: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_email: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -345,6 +351,13 @@ fn list_plugins(state: tauri::State<'_, Mutex<AppState>>) -> Vec<PluginMeta> {
     plugins
         .into_iter()
         .map(|plugin| PluginMeta {
+            claude_config_dir: plugin
+                .env_overrides
+                .iter()
+                .find(|(k, _)| k == claude_accounts::CLAUDE_CONFIG_DIR_ENV)
+                .map(|(_, v)| v.clone()),
+            base_plugin_id: plugin.base_id,
+            account_email: plugin.account_email,
             id: plugin.manifest.id,
             name: plugin.manifest.name,
             icon_url: plugin.icon_data_url,

@@ -191,8 +191,8 @@ describe("settings page", () => {
     expect(label.className).not.toContain("truncate");
     expect(control.className).toContain("ui-pressable");
     expect(control.className).toContain("h-8");
-    expect(control.className.split(/\s+/)).toContain("max-w-[11rem]");
-    expect(control.className.split(/\s+/)).not.toContain("w-[11rem]");
+    expect(control.className.split(/\s+/)).toContain("max-w-44");
+    expect(control.className.split(/\s+/)).not.toContain("w-44");
     expect(screen.queryByText("Press Escape while recording to clear.")).toBeNull();
   });
 });

@@ -536,3 +536,17 @@ describe("providerCard — expandable dashboard card", () => {
     expect(onHeaderContextMenu).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("providerCard — title tooltip", () => {
+  it("makes the title a tooltip trigger when nameTooltip is set", () => {
+    renderCard({ name: "Claude · sub", nameTooltip: "sub@example.com" });
+    const title = screen.getByRole("heading", { name: "Claude · sub" });
+    expect(title.getAttribute("data-slot")).toBe("tooltip-trigger");
+  });
+
+  it("keeps a plain title without nameTooltip", () => {
+    renderCard({});
+    const title = screen.getByRole("heading", { name: "Claude" });
+    expect(title.getAttribute("data-slot")).toBeNull();
+  });
+});

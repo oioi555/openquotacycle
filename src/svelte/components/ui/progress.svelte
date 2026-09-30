@@ -71,7 +71,7 @@
   aria-valuenow={clamped}
   aria-valuemin={0}
   aria-valuemax={100}
-  class={cn("relative h-[4px] w-full rounded-full bg-meter-track", className)}
+  class={cn("relative h-1 w-full rounded-full bg-meter-track", className)}
   {...rest}
 >
   <div
@@ -85,7 +85,7 @@
       data-slot="progress-headroom"
       data-crossing-go={budgetEmphasis === "go" ? "true" : undefined}
       aria-hidden="true"
-      class="absolute top-0 z-[1] h-full pointer-events-none {budgetEmphasis === 'go'
+      class="absolute top-0 z-1 h-full pointer-events-none {budgetEmphasis === 'go'
         ? 'meter-headroom-hatch-go'
         : 'meter-headroom-hatch'}"
       style:left={`${budgetLeft}%`}
@@ -98,8 +98,8 @@
       data-crossing-go={markerEmphasis === "go" ? "true" : undefined}
       aria-hidden="true"
       class="absolute z-10 pointer-events-none rounded-[1px] {markerEmphasis === 'go'
-        ? 'w-[4px] h-[16px] bg-meter-fill opacity-100'
-        : 'w-[2px] h-[12px] bg-foreground opacity-60'}"
+        ? 'w-1 h-4 bg-meter-fill opacity-100'
+        : 'w-[2px] h-3 bg-foreground opacity-60'}"
       style:top={markerEmphasis === "go" ? "-6px" : "-4px"}
       style:left={`${clampedMarker}%`}
       style:transform={markerTransform}

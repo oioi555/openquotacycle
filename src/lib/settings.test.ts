@@ -130,6 +130,16 @@ describe("settings", () => {
     })
   })
 
+  it("enables new Claude account instances by default via base id", () => {
+    const plugins: PluginMeta[] = [
+      { id: "claude", name: "Claude", iconUrl: "", lines: [] },
+      { id: "claude@1234abcd", basePluginId: "claude", name: "Claude · b", iconUrl: "", lines: [] },
+      { id: "zai", name: "Z", iconUrl: "", lines: [] },
+    ]
+    const normalized = normalizePluginSettings({ order: [], disabled: [] }, plugins)
+    expect(normalized.disabled).toEqual(["zai"])
+  })
+
   it("specifies only visible bars per plugin", () => {
     const plugins: PluginMeta[] = [
       {

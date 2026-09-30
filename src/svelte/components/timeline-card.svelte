@@ -267,7 +267,7 @@
                 : 'text-muted-foreground'}">{faceOf(item)}</span
             >
           </TooltipTrigger>
-          <TooltipContent side="top" class="max-w-[220px] text-center leading-snug">
+          <TooltipContent side="top" class="max-w-55 text-center leading-snug">
             <span class="block">{item.name} · {item.quotaLabel}</span>
             {#if remainingOf(item)}
               <span class="block tabular-nums">{remainingOf(item)}</span>

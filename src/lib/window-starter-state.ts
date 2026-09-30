@@ -3,7 +3,7 @@ import {
   effectiveWindowStarterRunner,
   type PluginSettings,
 } from "@/lib/settings"
-import type { PluginMeta, PluginOutput, WindowStarterCapability } from "@/lib/plugin-types"
+import { pluginBaseId, type PluginMeta, type PluginOutput, type WindowStarterCapability } from "@/lib/plugin-types"
 import {
   getWindowLockRemainingMs,
   type WindowStarterAttempt,
@@ -49,6 +49,9 @@ export type WindowStarterProviderStatus =
 
 export type WindowStarterProviderView = {
   pluginId: string
+  /** Pin-table key (`claude` for every Claude account instance). */
+  basePluginId: string
+  claudeConfigDir?: string
   windowId: string
   windowLine: string
   runnerId: string
@@ -233,6 +236,8 @@ export function classifyWindowStarterProviders({
       )
       const base: WindowStarterProviderView = {
         pluginId: meta.id,
+        basePluginId: pluginBaseId(meta),
+        claudeConfigDir: meta.claudeConfigDir,
         windowId: window.id,
         windowLine: window.line,
         runnerId,
@@ -339,18 +344,23 @@ export function quoteWindowStarterPrompt(prompt: string): string {
   return `'${prompt.replace(/'/g, "'\\''")}'`
 }
 
+/** `pluginId` is the base plugin id; `claudeConfigDir` is set only for Claude account instances. */
 export function getWindowStarterCommand(
   pluginId: string,
   runnerId: string,
   windowId: string,
   prompt: string = WINDOW_STARTER_PROMPT_PLACEHOLDER,
+  claudeConfigDir?: string,
 ): string {
   const token =
     prompt === WINDOW_STARTER_PROMPT_PLACEHOLDER
       ? WINDOW_STARTER_PROMPT_PLACEHOLDER
       : quoteWindowStarterPrompt(prompt)
   if (pluginId === "claude" && runnerId === "claude") {
-    return `claude -p ${token} --model claude-haiku-4-5 --tools "" --max-turns 1 --no-session-persistence`
+    const env = claudeConfigDir
+      ? `CLAUDE_CONFIG_DIR=${quoteWindowStarterPrompt(claudeConfigDir)} `
+      : ""
+    return `${env}claude -p ${token} --model claude-haiku-4-5 --tools "" --max-turns 1 --no-session-persistence`
   }
   if (pluginId === "codex" && runnerId === "codex") {
     return `codex exec --ephemeral --skip-git-repo-check --sandbox read-only -m gpt-5.6-luna -c model_reasoning_effort="none" ${token}`

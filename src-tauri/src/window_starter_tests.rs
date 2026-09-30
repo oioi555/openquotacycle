@@ -10,6 +10,22 @@ fn session_window() -> WindowStarterWindow {
     }
 }
 
+fn target(plugin_id: &str) -> StarterTarget {
+    StarterTarget {
+        base_id: plugin_id.to_string(),
+        env_overrides: vec![],
+        capability: capability(plugin_id),
+    }
+}
+
+fn claude_instance_target(dir: &str) -> StarterTarget {
+    StarterTarget {
+        base_id: "claude".to_string(),
+        env_overrides: vec![("CLAUDE_CONFIG_DIR".to_string(), dir.to_string())],
+        capability: capability("claude"),
+    }
+}
+
 fn capability(plugin_id: &str) -> WindowStarterCapability {
     match plugin_id {
         "claude" => WindowStarterCapability {
@@ -136,7 +152,7 @@ fn claude_rejects_third_party_harness_without_spawn() {
             "Session",
             "ping",
             None,
-            Some(&capability("claude")),
+            Some(&target("claude")),
         );
         assert_eq!(result.status, RunStatus::Unsupported);
         assert!(result.executable.is_empty());
@@ -226,7 +242,7 @@ fn zai_rejects_claude_code_without_spawn() {
         "Session",
         "ping",
         None,
-        Some(&capability("zai")),
+        Some(&target("zai")),
     );
     assert_eq!(result.status, RunStatus::Unsupported);
     assert!(result.executable.is_empty());
@@ -308,7 +324,7 @@ fn unknown_plugin_or_window_is_unsupported() {
         "Weekly",
         "ping",
         None,
-        Some(&capability("claude")),
+        Some(&target("claude")),
     );
     assert_eq!(bad_line.status, RunStatus::Unsupported);
 }
@@ -452,4 +468,50 @@ fn run_bounded_reports_failed_spawn_for_missing_program() {
     );
     assert_eq!(run.status, RunStatus::Failed);
     assert_eq!(run.exit_code, None);
+}
+
+#[test]
+fn claude_instance_rejects_third_party_runner_and_bad_line() {
+    let t = claude_instance_target("/x/.claude-b");
+    let r = run_window_starter(
+        "claude@1234abcd",
+        "opencode",
+        "Session",
+        "ping",
+        None,
+        Some(&t),
+    );
+    assert_eq!(r.status, RunStatus::Unsupported);
+    assert_eq!(r.provider_id, "claude@1234abcd");
+    assert!(r.executable.is_empty());
+    let r = run_window_starter(
+        "claude@1234abcd",
+        "claude",
+        "Weekly",
+        "ping",
+        None,
+        Some(&t),
+    );
+    assert_eq!(r.status, RunStatus::Unsupported);
+}
+
+#[test]
+fn unknown_claude_instance_is_unsupported() {
+    let r = run_window_starter("claude@ffffffff", "claude", "Session", "ping", None, None);
+    assert_eq!(r.status, RunStatus::Unsupported);
+    assert!(r.executable.is_empty());
+}
+
+#[test]
+fn run_bounded_env_sets_claude_config_dir_only_when_given() {
+    let script = vec![
+        "-c".to_string(),
+        "printf '%s' \"${CLAUDE_CONFIG_DIR-unset}\"".to_string(),
+    ];
+    let envs = vec![("CLAUDE_CONFIG_DIR".to_string(), "/x/.claude-b".to_string())];
+    let run = run_bounded_env("/bin/sh", &script, &envs, Duration::from_secs(5), 4096);
+    assert_eq!(run.output.trim(), "/x/.claude-b");
+    let inherited = std::env::var("CLAUDE_CONFIG_DIR").unwrap_or_else(|_| "unset".to_string());
+    let run = run_bounded_env("/bin/sh", &script, &[], Duration::from_secs(5), 4096);
+    assert_eq!(run.output.trim(), inherited);
 }

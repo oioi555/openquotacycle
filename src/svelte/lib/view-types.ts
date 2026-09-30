@@ -24,6 +24,8 @@ export type SettingsPluginConfig = {
   brandColor?: string;
   overviewProgressBars: Array<{ label: string; checked: boolean }>;
   windowStarter?: SettingsWindowStarterConfig;
+  basePluginId?: string;
+  claudeConfigDir?: string;
   antigravityAgyAutoWake?: boolean;
   grokAutoWake?: boolean;
 };

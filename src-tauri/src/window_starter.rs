@@ -276,10 +276,23 @@ fn truncate_and_redact(output: &[u8], max_bytes: usize) -> (String, bool) {
     (host_api::redact_log_message(&text), truncated)
 }
 
-/// Run a command directly (no shell) with a timeout and process-group cleanup.
+#[cfg(test)]
 fn run_bounded(program: &str, args: &[String], timeout: Duration, max_bytes: usize) -> BoundedRun {
+    run_bounded_env(program, args, &[], timeout, max_bytes)
+}
+
+/// Run a command directly (no shell) with a timeout and process-group cleanup.
+/// `envs` are host-controlled additions (e.g. `CLAUDE_CONFIG_DIR` for Claude account instances).
+fn run_bounded_env(
+    program: &str,
+    args: &[String],
+    envs: &[(String, String)],
+    timeout: Duration,
+    max_bytes: usize,
+) -> BoundedRun {
     let mut command = std::process::Command::new(program);
     command.args(args);
+    command.envs(envs.iter().map(|(k, v)| (k, v)));
     configure_process_group(&mut command);
     command
         .stdin(std::process::Stdio::null())
@@ -388,6 +401,14 @@ pub fn match_window<'a>(
         .find(|window| window.line == window_line)
 }
 
+/// Host-side view of a loaded plugin for Window Starter (never supplied by the WebView).
+pub struct StarterTarget {
+    /// Pin table key (`claude` for every Claude account instance).
+    pub base_id: String,
+    pub env_overrides: Vec<(String, String)>,
+    pub capability: WindowStarterCapability,
+}
+
 /// Run the pinned command for a plugin/runner/window with a bounded window.
 pub fn run_window_starter(
     plugin_id: &str,
@@ -395,11 +416,12 @@ pub fn run_window_starter(
     window_line: &str,
     prompt: &str,
     timeout_secs: Option<u64>,
-    capability: Option<&WindowStarterCapability>,
+    target: Option<&StarterTarget>,
 ) -> WindowStarterRun {
-    let Some(capability) = capability else {
+    let Some(target) = target else {
         return unsupported_run(plugin_id, runner_id, window_line);
     };
+    let capability = &target.capability;
     if !capability.allowed_runners.iter().any(|id| id == runner_id) {
         return unsupported_run(plugin_id, runner_id, window_line);
     }
@@ -409,7 +431,7 @@ pub fn run_window_starter(
     let Some(executable_name) = catalog_executable(runner_id) else {
         return unsupported_run(plugin_id, runner_id, window_line);
     };
-    let Some(args) = command_args(plugin_id, runner_id, &window.id, prompt) else {
+    let Some(args) = command_args(&target.base_id, runner_id, &window.id, prompt) else {
         return unsupported_run(plugin_id, runner_id, window_line);
     };
 
@@ -419,7 +441,13 @@ pub fn run_window_starter(
         .map(|path| path.to_string_lossy().to_string())
         .unwrap_or_else(|| executable_name.to_string());
     let timeout = Duration::from_secs(timeout_secs.unwrap_or(DEFAULT_TIMEOUT_SECS).clamp(1, 120));
-    let run = run_bounded(&executable, &args, timeout, MAX_OUTPUT_BYTES);
+    let run = run_bounded_env(
+        &executable,
+        &args,
+        &target.env_overrides,
+        timeout,
+        MAX_OUTPUT_BYTES,
+    );
 
     WindowStarterRun {
         provider_id: plugin_id.to_string(),
@@ -450,7 +478,7 @@ pub async fn window_starter_run(
     prompt: String,
     timeout_secs: Option<u64>,
 ) -> Result<WindowStarterRun, String> {
-    let capability = {
+    let target = {
         let plugins = {
             let locked = state
                 .lock()
@@ -460,7 +488,13 @@ pub async fn window_starter_run(
         plugins
             .into_iter()
             .find(|plugin| plugin.manifest.id == plugin_id)
-            .and_then(|plugin| plugin.window_starter)
+            .and_then(|plugin| {
+                Some(StarterTarget {
+                    capability: plugin.window_starter?,
+                    base_id: plugin.base_id,
+                    env_overrides: plugin.env_overrides,
+                })
+            })
     };
     tauri::async_runtime::spawn_blocking(move || {
         run_window_starter(
@@ -469,7 +503,7 @@ pub async fn window_starter_run(
             &window_line,
             &prompt,
             timeout_secs,
-            capability.as_ref(),
+            target.as_ref(),
         )
     })
     .await

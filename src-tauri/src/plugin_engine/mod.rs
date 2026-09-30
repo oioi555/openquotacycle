@@ -11,7 +11,8 @@ pub fn initialize_plugins(
 ) -> (PathBuf, Vec<LoadedPlugin>) {
     if let Some(dev_dir) = find_dev_plugins_dir() {
         if !is_dir_empty(&dev_dir) {
-            let plugins = manifest::load_plugins_from_dir(&dev_dir);
+            let mut plugins = manifest::load_plugins_from_dir(&dev_dir);
+            crate::claude_accounts::expand_claude_instances(&mut plugins);
             return (dev_dir, plugins);
         }
     }
@@ -30,7 +31,8 @@ pub fn initialize_plugins(
         copy_dir_recursive(&bundled_dir, &install_dir);
     }
 
-    let plugins = manifest::load_plugins_from_dir(&install_dir);
+    let mut plugins = manifest::load_plugins_from_dir(&install_dir);
+    crate::claude_accounts::expand_claude_instances(&mut plugins);
     (install_dir, plugins)
 }
 

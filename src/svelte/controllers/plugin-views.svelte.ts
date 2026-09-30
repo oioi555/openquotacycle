@@ -62,6 +62,8 @@ class PluginViews {
           enabled: !pluginSettings.disabled.includes(id),
           iconUrl: meta.iconUrl,
           brandColor: meta.brandColor,
+          basePluginId: meta.basePluginId,
+          ...(meta.claudeConfigDir ? { claudeConfigDir: meta.claudeConfigDir } : {}),
           overviewProgressBars: getOverviewProgressBarOptions(
             meta,
             pluginSettings.visibleOverviewProgressLines?.[id],

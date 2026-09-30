@@ -30,6 +30,7 @@
 
   let {
     name,
+    nameTooltip,
     plan,
     iconUrl,
     brandColor,
@@ -68,6 +69,8 @@
     now: nowProp,
   }: {
     name: string;
+    /** Title hover text (e.g. full Claude account email). */
+    nameTooltip?: string;
     plan?: string;
     iconUrl?: string;
     brandColor?: string;
@@ -294,7 +297,18 @@
   <div class="px-1 pt-1">
     <div class="flex items-center justify-between gap-2 mb-1">
       <div class="flex items-center gap-2 min-w-0">
-        <h2 class="text-sm font-semibold truncate" style:transform="translateZ(0)">{name}</h2>
+        {#if nameTooltip}
+          <Tooltip>
+            <TooltipTrigger>
+              {#snippet child({ props })}
+                <h2 {...props} class="text-sm font-semibold truncate" style:transform="translateZ(0)">{name}</h2>
+              {/snippet}
+            </TooltipTrigger>
+            <TooltipContent side="top">{nameTooltip}</TooltipContent>
+          </Tooltip>
+        {:else}
+          <h2 class="text-sm font-semibold truncate" style:transform="translateZ(0)">{name}</h2>
+        {/if}
         {#if plan}
           <span class="truncate shrink-0 text-[11px] leading-none text-muted-foreground" title={plan}>
             {plan}

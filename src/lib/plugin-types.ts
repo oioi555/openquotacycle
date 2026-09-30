@@ -68,6 +68,17 @@ export type PluginMeta = {
   lines: ManifestLine[];
   links?: PluginLink[];
   windowStarter?: WindowStarterCapability;
+  /** Plugin this instance derives from (`claude` for `claude@<key>`); equals `id` otherwise. */
+  basePluginId?: string;
+  /** Claude account instances only: host-resolved config dir (display/copy only; never sent back). */
+  claudeConfigDir?: string;
+  /** Claude multi-account only: full account email for the card title tooltip. */
+  accountEmail?: string;
+}
+
+/** Base plugin id: `claude` for Claude account instances, else the plugin id. */
+export function pluginBaseId(meta: Pick<PluginMeta, "id" | "basePluginId">): string {
+  return meta.basePluginId ?? meta.id
 }
 
 export type PluginDisplayState = {

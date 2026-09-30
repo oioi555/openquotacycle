@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="mt-1 pb-2">
-        <Skeleton class="h-[4px] w-full rounded-full" />
+        <Skeleton class="h-1 w-full rounded-full" />
       </div>
     </div>
   {:else}

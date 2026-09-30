@@ -277,7 +277,7 @@ mod keychain_platform {
     }
 }
 
-fn resolve_env_value(name: &str) -> Option<String> {
+pub(crate) fn resolve_env_value(name: &str) -> Option<String> {
     read_env_from_process(name).or_else(|| read_env_from_login_shell(name))
 }
 
@@ -567,6 +567,7 @@ pub fn inject_host_api<'js>(
     plugin_id: &str,
     app_data_dir: &PathBuf,
     app_version: &str,
+    env_overrides: &[(String, String)],
 ) -> rquickjs::Result<()> {
     let globals = ctx.globals();
     let probe_ctx = Object::new(ctx.clone())?;
@@ -595,7 +596,7 @@ pub fn inject_host_api<'js>(
     inject_log(ctx, &host, plugin_id)?;
     inject_fs(ctx, &host)?;
     inject_crypto(ctx, &host)?;
-    inject_env(ctx, &host, plugin_id)?;
+    inject_env(ctx, &host, env_overrides)?;
     inject_http(ctx, &host, plugin_id)?;
     inject_keychain(ctx, &host, plugin_id)?;
     inject_sqlite(ctx, &host)?;
@@ -739,11 +740,19 @@ fn inject_crypto<'js>(ctx: &Ctx<'js>, host: &Object<'js>) -> rquickjs::Result<()
     Ok(())
 }
 
-fn inject_env<'js>(ctx: &Ctx<'js>, host: &Object<'js>, _plugin_id: &str) -> rquickjs::Result<()> {
+fn inject_env<'js>(
+    ctx: &Ctx<'js>,
+    host: &Object<'js>,
+    env_overrides: &[(String, String)],
+) -> rquickjs::Result<()> {
     let env_obj = Object::new(ctx.clone())?;
+    let overrides = env_overrides.to_vec();
     env_obj.set(
         "get",
         Function::new(ctx.clone(), move |name: String| -> Option<String> {
+            if let Some((_, value)) = overrides.iter().find(|(k, _)| *k == name) {
+                return Some(value.clone());
+            }
             if !WHITELISTED_ENV_VARS.contains(&name.as_str()) {
                 return None;
             }
@@ -1931,7 +1940,7 @@ mod tests {
         let ctx = Context::full(&rt).expect("context");
         ctx.with(|ctx| {
             let app_data = std::env::temp_dir();
-            inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
+            inject_host_api(&ctx, "test", &app_data, "0.0.0", &[]).expect("inject host api");
             let globals = ctx.globals();
             let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");
@@ -1948,7 +1957,7 @@ mod tests {
         let ctx = Context::full(&rt).expect("context");
         ctx.with(|ctx| {
             let app_data = std::env::temp_dir();
-            inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
+            inject_host_api(&ctx, "test", &app_data, "0.0.0", &[]).expect("inject host api");
             let js_expr = format!(
                 r#"__openquotacycle_ctx.host.crypto.decryptAes256Gcm("{}", "{}")"#,
                 envelope, key_b64
@@ -1959,12 +1968,37 @@ mod tests {
     }
 
     #[test]
+    fn env_get_prefers_host_overrides() {
+        let rt = Runtime::new().expect("runtime");
+        let ctx = Context::full(&rt).expect("context");
+        ctx.with(|ctx| {
+            let app_data = std::env::temp_dir();
+            let overrides = vec![("CLAUDE_CONFIG_DIR".to_string(), "/x/.claude-b".to_string())];
+            inject_host_api(&ctx, "claude@b", &app_data, "0.0.0", &overrides).expect("inject");
+            let got: String = ctx
+                .eval(r#"__openquotacycle_ctx.host.env.get("CLAUDE_CONFIG_DIR")"#)
+                .expect("eval");
+            assert_eq!(got, "/x/.claude-b");
+        });
+        let rt = Runtime::new().expect("runtime");
+        let ctx = Context::full(&rt).expect("context");
+        ctx.with(|ctx| {
+            let app_data = std::env::temp_dir();
+            inject_host_api(&ctx, "test", &app_data, "0.0.0", &[]).expect("inject");
+            let got: Option<String> = ctx
+                .eval(r#"__openquotacycle_ctx.host.env.get("NOT_WHITELISTED_OQC_VAR")"#)
+                .expect("eval");
+            assert_eq!(got, None);
+        });
+    }
+
+    #[test]
     fn keychain_api_exposes_write_variants() {
         let rt = Runtime::new().expect("runtime");
         let ctx = Context::full(&rt).expect("context");
         ctx.with(|ctx| {
             let app_data = std::env::temp_dir();
-            inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
+            inject_host_api(&ctx, "test", &app_data, "0.0.0", &[]).expect("inject host api");
             let globals = ctx.globals();
             let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");
@@ -2029,7 +2063,7 @@ mod tests {
         let ctx = Context::full(&rt).expect("context");
         ctx.with(|ctx| {
             let app_data = std::env::temp_dir();
-            inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
+            inject_host_api(&ctx, "test", &app_data, "0.0.0", &[]).expect("inject host api");
             let globals = ctx.globals();
             let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");
@@ -2098,7 +2132,7 @@ mod tests {
         let ctx = Context::full(&rt).expect("context");
         ctx.with(|ctx| {
             let app_data = std::env::temp_dir();
-            inject_host_api(&ctx, "test", &app_data, "0.0.0").expect("inject host api");
+            inject_host_api(&ctx, "test", &app_data, "0.0.0", &[]).expect("inject host api");
             let globals = ctx.globals();
             let probe_ctx: Object = globals.get("__openquotacycle_ctx").expect("probe ctx");
             let host: Object = probe_ctx.get("host").expect("host");

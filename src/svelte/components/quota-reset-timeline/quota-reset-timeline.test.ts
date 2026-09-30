@@ -86,7 +86,7 @@ describe("quotaResetTimeline (Svelte)", () => {
     expect(plots[0]?.getAttribute("data-kind")).toBe("ring");
     expect(plots[1]?.getAttribute("data-emphasis")).toBe("later");
     expect(plots[1]?.getAttribute("data-kind")).toBe("dot");
-    expect(document.querySelector("[data-slot='timeline-lane']")?.className).toContain("h-[4px]");
+    expect(document.querySelector("[data-slot='timeline-lane']")?.className.split(/\s+/)).toContain("h-1");
     expect(document.querySelector("[data-slot='timeline-grid']")).toBeTruthy();
     expect(screen.queryByText(/\d{1,2}:\d{2}/)).toBeNull();
     expect(screen.getByLabelText(/Codex · Five-hour window · 60% · resets/)).toBeTruthy();

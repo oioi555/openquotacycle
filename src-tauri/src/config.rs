@@ -14,6 +14,59 @@ pub struct ProxyConfig {
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppConfig {
     pub proxy: Option<ProxyConfig>,
+    #[serde(default)]
+    pub claude: Option<ClaudeConfig>,
+}
+
+/// `claude` section: extra Claude Code config dirs (multi-account).
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ClaudeConfig {
+    #[serde(default)]
+    pub account_dirs: Vec<String>,
+}
+
+/// Reads `claude.accountDirs` from config.json with `~` expanded against `home`.
+/// Missing/invalid config yields an empty list.
+pub fn load_claude_account_dirs(home: &std::path::Path) -> Vec<PathBuf> {
+    let Some(path) = config_path() else {
+        return Vec::new();
+    };
+    let Ok(contents) = std::fs::read_to_string(&path) else {
+        return Vec::new();
+    };
+    parse_claude_account_dirs(&contents, home)
+}
+
+pub fn parse_claude_account_dirs(contents: &str, home: &std::path::Path) -> Vec<PathBuf> {
+    let config = match serde_json::from_str::<AppConfig>(contents) {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            log::warn!(
+                "[config] failed to parse config for claude.accountDirs: {}",
+                e
+            );
+            return Vec::new();
+        }
+    };
+    config
+        .claude
+        .map(|c| c.account_dirs)
+        .unwrap_or_default()
+        .iter()
+        .map(|raw| expand_tilde(raw.trim(), home))
+        .filter(|p| !p.as_os_str().is_empty())
+        .collect()
+}
+
+fn expand_tilde(raw: &str, home: &std::path::Path) -> PathBuf {
+    if raw == "~" {
+        home.to_path_buf()
+    } else if let Some(rest) = raw.strip_prefix("~/") {
+        home.join(rest)
+    } else {
+        PathBuf::from(raw)
+    }
 }
 
 /// Resolved proxy state — computed once at startup, used per-request.
@@ -131,6 +184,7 @@ mod tests {
                 enabled: false,
                 url: "http://127.0.0.1:10808".to_string(),
             }),
+            claude: None,
         };
         assert!(config.proxy.as_ref().filter(|p| p.enabled).is_none());
     }
@@ -142,7 +196,26 @@ mod tests {
                 enabled: true,
                 url: "http://127.0.0.1:10808".to_string(),
             }),
+            claude: None,
         };
         assert!(config.proxy.as_ref().filter(|p| p.enabled).is_some());
+    }
+
+    #[test]
+    fn parses_claude_account_dirs_with_tilde() {
+        let home = std::path::Path::new("/home/u");
+        let dirs = parse_claude_account_dirs(
+            r#"{"claude":{"accountDirs":["~/acc/a","/srv/claude/acc1"]}}"#,
+            home,
+        );
+        assert_eq!(
+            dirs,
+            vec![
+                PathBuf::from("/home/u/acc/a"),
+                PathBuf::from("/srv/claude/acc1")
+            ]
+        );
+        assert!(parse_claude_account_dirs(r#"{"proxy":null}"#, home).is_empty());
+        assert!(parse_claude_account_dirs("not json", home).is_empty());
     }
 }

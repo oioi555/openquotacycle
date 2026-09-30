@@ -17,6 +17,7 @@
     getWindowStarterCommand,
     WINDOW_STARTER_RUNNER_LABELS,
   } from "@/lib/window-starter-state";
+  import { pluginBaseId } from "@/lib/plugin-types";
 
   let {
     plugin,
@@ -66,10 +67,11 @@
     const starter = plugin.windowStarter;
     if (!starter) return;
     const text = getWindowStarterCommand(
-      plugin.id,
+      pluginBaseId(plugin),
       starter.runnerId,
       starter.windows[0]?.id ?? "",
       createWindowStarterPrompt(),
+      plugin.claudeConfigDir,
     );
     const write = navigator.clipboard?.writeText
       ? navigator.clipboard.writeText(text)
@@ -248,7 +250,7 @@
             <DropdownMenu>
               <DropdownMenuTrigger
                 aria-label="Window Starter runner"
-                class="ui-pressable h-8 max-w-[11rem] shrink-0 justify-between gap-1.5 rounded-md border border-input bg-background px-2 text-sm font-normal text-foreground"
+                class="ui-pressable h-8 max-w-44 shrink-0 justify-between gap-1.5 rounded-md border border-input bg-background px-2 text-sm font-normal text-foreground"
               >
                 <span class="truncate">{runnerLabel(starter.runnerId)}</span>
                 <ChevronDown class="size-3.5 shrink-0 text-muted-foreground" />

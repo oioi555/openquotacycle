@@ -87,8 +87,8 @@ describe("ui primitives", () => {
     expect(fill.style.width).toBe("42%");
     expect(fill.style.minWidth).toBe("4px");
     expect(fill.style.backgroundColor).toBe("var(--meter-fill)");
-    expect(bar?.className).toContain("h-[4px]");
-    expect(container.querySelector('[data-slot="progress-marker"]')?.className).toContain("h-[12px]");
+    expect(bar?.className.split(/\s+/)).toContain("h-1");
+    expect(container.querySelector('[data-slot="progress-marker"]')?.className.split(/\s+/)).toContain("h-3");
   });
 
   it("progress emphasizes the crossing-go tick", () => {
@@ -100,8 +100,8 @@ describe("ui primitives", () => {
     expect(marker?.className).toContain("bg-meter-fill");
     expect(marker?.className).not.toContain("meter-go-tick");
     expect(marker?.className).not.toContain("shadow-");
-    expect(marker?.className).toContain("w-[4px]");
-    expect(marker?.className).toContain("h-[16px]");
+    expect(marker?.className.split(/\s+/)).toContain("w-1");
+    expect(marker?.className.split(/\s+/)).toContain("h-4");
     expect(marker?.className).toContain("opacity-100");
   });
 
