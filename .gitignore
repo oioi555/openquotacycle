@@ -45,6 +45,7 @@ src-tauri/resources/bundled_plugins/*
 openspec/changes/*
 !openspec/changes/archive/
 openspec/.cache/context.json
+/undefined/
 
 .agents/skills/openspec*
 .agents/skills/.openspec-target
