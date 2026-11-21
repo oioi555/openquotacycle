@@ -145,7 +145,7 @@ describe("settings page", () => {
 
     await fireEvent.click(screen.getByLabelText("Auto-update interval"));
     await waitFor(() => {
-      expect(screen.getByRole("menu")).toBeTruthy();
+      expect(screen.getByRole("menuitem", { name: "15 min" })).toBeTruthy();
     });
     expect(screen.getAllByRole("menuitem").map((item) => item.textContent?.trim())).toEqual([
       "5 min",
@@ -156,16 +156,21 @@ describe("settings page", () => {
 
     await fireEvent.click(screen.getByLabelText("Usage display mode"));
     await waitFor(() => {
-      expect(screen.getByRole("menu")).toBeTruthy();
+      expect(screen.getByRole("menuitem", { name: "Used" })).toBeTruthy();
     });
     await fireEvent.click(screen.getByRole("menuitem", { name: "Used" }));
     expect(onDisplayModeChange).toHaveBeenCalledWith("used");
 
     await fireEvent.click(screen.getByLabelText("5-hour leftover from"));
     await waitFor(() => {
-      expect(screen.getByRole("menu")).toBeTruthy();
+      expect(screen.getByRole("menuitem", { name: "Last 1.5 hours" })).toBeTruthy();
     });
-    expect(screen.getAllByRole("menuitem").map((item) => item.textContent?.trim())).toEqual([
+    const leftoverMenu = screen.getByRole("menuitem", { name: "Last 1.5 hours" }).closest('[role="menu"]');
+    expect(
+      Array.from(leftoverMenu?.querySelectorAll('[role="menuitem"]') ?? []).map((item) =>
+        item.textContent?.trim(),
+      ),
+    ).toEqual([
       "Last 30 min",
       "Last 1 hour",
       "Last 1.5 hours",
