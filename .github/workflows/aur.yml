@@ -60,11 +60,12 @@ jobs:
         if: steps.secret.outputs.present == 'true'
         env:
           VERSION: ${{ steps.ver.outputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           API="https://api.github.com/repos/${{ github.repository }}/releases/tags/v${VERSION}"
           for i in 1 2 3 4 5 6 7 8; do
-            NAME="$(curl -fsSL "$API" | jq -r '.assets[].name | select(endswith(".deb"))' | head -n 1 || true)"
+            NAME="$(curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "$API" | jq -r '.assets[].name | select(endswith(".deb"))' | head -n 1 || true)"
             if [ -n "${NAME}" ]; then
               URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/${NAME}"
               curl -fsSL "$URL" -o app.deb
