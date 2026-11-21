@@ -794,6 +794,52 @@ describe("antigravity plugin", () => {
     expect(calledUrls.some((url) => url.includes("fetchAvailableModels"))).toBe(false)
   })
 
+  it("reports separate Argon Wk bucket without merging into Weekly and declares it in manifest", async () => {
+    expect(pluginManifest.lines).toEqual(
+      expect.arrayContaining([
+        { type: "progress", label: "Argon Wk", scope: "overview", visibleByDefault: true },
+      ])
+    )
+
+    const ctx = makeCtx()
+    const futureExpiry = Math.floor(Date.now() / 1000) + 3600
+    setupSqliteMock(ctx, makeAuthStatusJson(), makeProtobufBase64(ctx, "ya29.argon-token", "1//refresh", futureExpiry))
+    ctx.host.ls.discover.mockReturnValue(null)
+
+    const summaryWithArgon = makeQuotaSummaryResponse(false)
+    summaryWithArgon.groups.push({
+      displayName: "Gemini 4 Argon",
+      buckets: [
+        { bucketId: "gemini-argon-wtu-weekly", remainingFraction: 0.78, resetTime: "2026-07-06T06:00:00Z" },
+      ],
+    })
+
+    ctx.host.http.request.mockImplementation((opts) => {
+      if (String(opts.url).includes("retrieveUserQuotaSummary")) {
+        return { status: 200, bodyText: JSON.stringify(summaryWithArgon) }
+      }
+      return { status: 500, bodyText: "" }
+    })
+
+    const plugin = await loadPlugin()
+    const result = plugin.probe(ctx)
+
+    expect(result.lines.map((line) => line.label)).toEqual([
+      "Session",
+      "Weekly",
+      "Argon Wk",
+      "Claude",
+      "Claude Wk",
+    ])
+    const weekly = result.lines.find((line) => line.label === "Weekly")
+    const argon = result.lines.find((line) => line.label === "Argon Wk")
+    expect(weekly.used).toBe(10)
+    expect(weekly.resetsAt).toBe("2026-07-06T07:00:00Z")
+    expect(argon.used).toBe(22)
+    expect(argon.resetsAt).toBe("2026-07-06T06:00:00Z")
+    expect(argon.periodDurationMs).toBe(7 * 24 * 60 * 60 * 1000)
+  })
+
   it("treats an empty Cloud Code summary as authoritative", async () => {
     const ctx = makeCtx()
     const futureExpiry = Math.floor(Date.now() / 1000) + 3600
@@ -817,17 +863,21 @@ describe("antigravity plugin", () => {
     expect(result.lines).toEqual([])
   })
 
-  it("Cloud Code sends correct Authorization header with proto token", async () => {
+  it("Cloud Code sends correct Authorization and versioned User-Agent headers", async () => {
     const ctx = makeCtx()
     const futureExpiry = Math.floor(Date.now() / 1000) + 3600
     setupSqliteMock(ctx, makeAuthStatusJson(), makeProtobufBase64(ctx, "ya29.proto-token", "1//refresh", futureExpiry))
     ctx.host.ls.discover.mockReturnValue(null)
 
-    let capturedHeaders = null
+    const capturedByPath = {}
     ctx.host.http.request.mockImplementation((opts) => {
       const url = String(opts.url)
+      if (url.includes("retrieveUserQuotaSummary")) {
+        capturedByPath.summary = opts.headers
+        return { status: 500, bodyText: "" }
+      }
       if (url.includes("fetchAvailableModels")) {
-        capturedHeaders = opts.headers
+        capturedByPath.models = opts.headers
         return { status: 200, bodyText: JSON.stringify(makeCloudCodeResponse()) }
       }
       return { status: 500, bodyText: "" }
@@ -836,9 +886,12 @@ describe("antigravity plugin", () => {
     const plugin = await loadPlugin()
     plugin.probe(ctx)
 
-    expect(capturedHeaders).toBeTruthy()
-    expect(capturedHeaders.Authorization).toBe("Bearer ya29.proto-token")
-    expect(capturedHeaders["User-Agent"]).toBe("antigravity")
+    expect(capturedByPath.summary).toBeTruthy()
+    expect(capturedByPath.summary.Authorization).toBe("Bearer ya29.proto-token")
+    expect(capturedByPath.summary["User-Agent"]).toBe("antigravity/acp/1.3.0")
+    expect(capturedByPath.models).toBeTruthy()
+    expect(capturedByPath.models.Authorization).toBe("Bearer ya29.proto-token")
+    expect(capturedByPath.models["User-Agent"]).toBe("antigravity/acp/1.3.0")
   })
 
   it("Cloud Code returns null on 401/403 (invalid token, no refresh)", async () => {

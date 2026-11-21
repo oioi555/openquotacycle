@@ -64,10 +64,11 @@ Only exact bucket IDs are recognized:
 |---|---|---|
 | `gemini-5h` | Session | 5 hours |
 | `gemini-weekly` | Weekly | 7 days |
+| `gemini-argon-wtu-weekly` | Argon Wk | 7 days |
 | `3p-5h` | Claude | 5 hours |
 | `3p-weekly` | Claude Wk | 7 days |
 
-The Gemini Pro and Flash models share the Gemini pool. Claude, GPT-OSS, and other non-Gemini models share the `3p` pool. A missing `remainingFraction` drops only that bucket; it must not be treated as full or depleted.
+The Gemini Pro, Neon, Hydrogen, and Flash models share the Gemini pool. Paid Google AI Pro accounts receive a separate weekly-only pool for Gemini 4 Argon (`gemini-argon-wtu-weekly`), while Ultra includes Argon in the Gemini pool and omits that bucket. Claude, GPT-OSS, and other non-Gemini models share the `3p` pool. A missing `remainingFraction` drops only that bucket; it must not be treated as full or depleted.
 
 Five-hour Session/Claude windows keep a server `resetTime` even when rounded usage is still 0% — a tiny `agy` request can leave remaining at ~100% with a live 5-hour countdown. `Not started` is only for a missing reset time. Weekly windows keep their reset even when unused. OpenQuota's Overview may still show Session `Not started` at 0% used; OpenQuotaCycle intentionally shows the countdown to match `agy` and the Antigravity IDE.
 
@@ -275,8 +276,10 @@ The plugin tries this endpoint before the legacy model endpoints. A valid summar
 POST https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary
 Authorization: Bearer <access_token>
 Content-Type: application/json
-User-Agent: antigravity
+User-Agent: antigravity/acp/1.3.0
 ```
+
+Cloud Code omits `gemini-*` and `gemini-argon-*` buckets when given a bare `antigravity` or legacy `User-Agent`, so the versioned `antigravity/acp/1.3.0` header is required.
 
 ### fetchAvailableModels (legacy fallback)
 
@@ -284,7 +287,7 @@ User-Agent: antigravity
 POST https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels
 Authorization: Bearer <access_token>
 Content-Type: application/json
-User-Agent: antigravity
+User-Agent: antigravity/acp/1.3.0
 ```
 
 Base URLs tried in order:

@@ -51,7 +51,7 @@ makepkg -si
 
 ## Bundled providers
 
-- [**Antigravity**](docs/providers/antigravity.md) — Session, Weekly, Claude, Claude Wk, optional local spend
+- [**Antigravity**](docs/providers/antigravity.md) — Session, Weekly, Argon Wk, Claude, Claude Wk, optional local spend
 - [**Claude**](docs/providers/claude.md) — session, weekly, extra usage, Fable; [multiple accounts](docs/providers/claude.md#multiple-accounts) (one card per `CLAUDE_CONFIG_DIR` login)
 - [**Codex**](docs/providers/codex.md) — session, weekly, Luna Reserve, reviews, extra usage
 - [**Copilot**](docs/providers/copilot.md) — credits, chat, completions

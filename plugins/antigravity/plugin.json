@@ -9,6 +9,7 @@
   "lines": [
     { "type": "progress", "label": "Session", "scope": "overview", "visibleByDefault": true },
     { "type": "progress", "label": "Weekly", "scope": "overview", "visibleByDefault": true },
+    { "type": "progress", "label": "Argon Wk", "scope": "overview", "visibleByDefault": true },
     { "type": "progress", "label": "Claude", "scope": "overview", "visibleByDefault": true },
     { "type": "progress", "label": "Claude Wk", "scope": "overview", "visibleByDefault": true },
     { "type": "text", "label": "Today", "scope": "detail" },

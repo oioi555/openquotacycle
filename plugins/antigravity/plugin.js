@@ -416,6 +416,7 @@
   var SUMMARY_BUCKETS = [
     { id: "gemini-5h", label: "Session", periodMs: QUOTA_PERIOD_MS },
     { id: "gemini-weekly", label: "Weekly", periodMs: WEEKLY_PERIOD_MS },
+    { id: "gemini-argon-wtu-weekly", label: "Argon Wk", periodMs: WEEKLY_PERIOD_MS },
     { id: "3p-5h", label: "Claude", periodMs: QUOTA_PERIOD_MS },
     { id: "3p-weekly", label: "Claude Wk", periodMs: WEEKLY_PERIOD_MS },
   ]
@@ -522,6 +523,11 @@
 
   // --- Cloud Code API ---
 
+  // Cloud Code omits gemini-* summary buckets when sent a bare or legacy
+  // "antigravity" User-Agent; a versioned ACP header returns Gemini, Argon, and
+  // 3p pools together.
+  var CLOUD_CODE_USER_AGENT = "antigravity/acp/1.3.0"
+
   function probeCloudCodeSummary(ctx, token) {
     for (var i = 0; i < CLOUD_CODE_URLS.length; i++) {
       try {
@@ -531,7 +537,7 @@
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + token,
-            "User-Agent": "antigravity",
+            "User-Agent": CLOUD_CODE_USER_AGENT,
           },
           bodyText: "{}",
           timeoutMs: 15000,
@@ -561,7 +567,7 @@
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + token,
-            "User-Agent": "antigravity",
+            "User-Agent": CLOUD_CODE_USER_AGENT,
           },
           bodyText: "{}",
           timeoutMs: 15000,
